@@ -230,8 +230,8 @@ def draw(game_states):
 
 
     # Make the figure fullscreen
-    mng = plt.get_current_fig_manager()
-    mng.full_screen_toggle()  # works on most backends (TkAgg, Qt5Agg)
+    # mng = plt.get_current_fig_manager()
+    # mng.full_screen_toggle()  # works on most backends (TkAgg, Qt5Agg)
 
     plt.autoscale()
     plt.suptitle("Settlers of Catan - Game State Visualisation")

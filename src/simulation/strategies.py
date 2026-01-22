@@ -23,8 +23,6 @@ def random_strategy(player: PlayerState, state: GameState):
         player.settlements.add(int(v))
         print(f"Player placed settlement at vertex {v}")
 
-
-
     # Randomly place a road (just pick any empty allowed edge)
     free_edges = set(range(72)) - set.union(*(p.roads for p in state.players))
     allowed_edges = np.array([])
@@ -36,4 +34,5 @@ def random_strategy(player: PlayerState, state: GameState):
     if allowed_edges.size > 0:
         e = random.choice(list(allowed_edges))
         player.roads.add(int(e))
-        print(f"Player placed road at edge {e}")
+        print(f"Player placed road at edge {EDGE_VERTEX_INDICES[int(e)]}")
+        
