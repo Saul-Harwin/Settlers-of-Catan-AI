@@ -102,8 +102,7 @@ class GameState:
         
         
     def __str__(self) -> str:
-        start = f"\n--------------------------------------\nGame State: turn={self.turn}\n--------------------------------------\n"
-        end = f"--------------------------------------\n"
+        start = f"\n-------------------------------------------------------------------------------------------------------------\n                                              Game State: turn={self.turn} \n-------------------------------------------------------------------------------------------------------------\n"
         
         robber_summary = f"  Robber is on hex {self.robber_hex}"
         
@@ -122,7 +121,7 @@ class GameState:
                 f"    Victory points ('playerState.victory_points'): {p.victory_points}\n"
             )
         
-        return "\n".join([start, robber_summary, board_summary, players_summary, end])
+        return "\n".join([start, robber_summary, board_summary, players_summary])
         
 class PlayerState:
     def __init__(self):

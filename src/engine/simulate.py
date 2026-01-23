@@ -10,17 +10,17 @@ from map.geometry import TILE_VERTICES
 def simulate_game(game_state: GameState, n_turns: int = 10, visualise: bool = True) -> GameState:
     game_states = []
     
-    print(game_state)
     for t in range(n_turns):
+        print(game_state)
         
         dice_roll(game_state, debug=True)
         
-        for player in game_state.players:
+        print("\n------------------------  Build Phase  ------------------------")
+        for i, player in enumerate(game_state.players):
+            print(f"\nPlayer {i}:")
             random_strategy(player, game_state)
         
-        print(game_state)
-        game_states.append(game_state.copy())
-        
+        game_states.append(game_state.copy())        
         game_state.turn += 1
         
         
@@ -46,9 +46,9 @@ def dice_roll(state: GameState, debug: bool):
     hexes[hexes == desert_hex] += 1    
     
     if debug:
-        print("--------------------------------------------------")
-        print(f"Dice Roll: {dice[0]}+{dice[1]}={roll}")
-        print(f"Hexes: {hexes}")
+        print("\n-------------------------  Dice Role  -------------------------\n")
+        print(f"{dice[0]}+{dice[1]}={roll}")
+        print(f"Hexes: {hexes}\n")
     
     for hex_idx in hexes:
         if hex_idx == desert_hex:
@@ -67,7 +67,6 @@ def dice_roll(state: GameState, debug: bool):
                     resource_types = ["Desert", "Clay", "Wood", "Sheep", "Wheat", "Rock"]
                     print(f"Player {player_idx} has received {count} {resource_types[resource]}")
 
-    print("--------------------------------------------------")
                 
             
     
