@@ -4,6 +4,8 @@ import numpy as np
 
 
 def can_place_road(player: PlayerState, edge: int, state: GameState) -> bool:
+    cost = [1, 1, 0, 0, 0]
+    
     game_edges = state.get_edges()
     game_vertices = state.get_vertices()
     
@@ -28,13 +30,13 @@ def can_place_road(player: PlayerState, edge: int, state: GameState) -> bool:
     
     # 4. Is it connected to player's roads or settlements?
     if settlement_reachable(player, v1) or settlement_reachable(player, v2):
-        return True
+        return try_charge(player, cost)
     
     return False
 
 def can_place_settlement(player: PlayerState, vertex: int, state: GameState) -> bool:
-    game_vertices = state.get_vertices()
     # 1. Vertex must be empty
+    game_vertices = state.get_vertices()
     if game_vertices[vertex] != 0:
         return False
 
@@ -47,12 +49,17 @@ def can_place_settlement(player: PlayerState, vertex: int, state: GameState) -> 
         if game_vertices[neighbor] != 0:
             return False
         
+    # # 4. Can they afford it? 
+    # # Cost: brick, wood, wheat, sheep
+    cost = [1, 1, 1, 1, 0]
+    # if not try_charge(resources=player.resources, cost=cost):
+    #     return False      
+        
     # 4. Must be connected to player's road (except initial placement)
     if state.turn == 0:
         return True
     elif settlement_reachable(player, vertex):
-        return True 
-    
+        return try_charge(player, cost)
     
     return False
 
@@ -95,7 +102,6 @@ def is_robber_blocking(state: GameState, target: int) -> bool:
     covered_vertices = TILE_VERTICES[state.robber_hex]
     covered_roads = []
     
-    
     for i in range(len(covered_vertices)):
         covered_roads.append((covered_vertices[i], covered_vertices[(i+1)%6]))
 
@@ -118,5 +124,14 @@ def is_robber_blocking(state: GameState, target: int) -> bool:
         else:
             return False
     
+def can_afford(resources, cost) -> bool:
+    return all(r >= c for r, c in zip(resources, cost))
     
-    
+def try_charge(player, cost):
+    if not can_afford(player.resources, cost):
+        return False
+    else:
+        player.charge(player.resources, cost)
+        return True
+
+        

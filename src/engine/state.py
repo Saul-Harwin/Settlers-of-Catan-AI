@@ -131,6 +131,13 @@ class PlayerState:
         self.roads = set()
         self.victory_points = 0
         
+    def charge(self, cost: np.ndarray) -> None:
+        if not np.all(self.resources >= cost):
+            raise ValueError("Player cannot afford cost")
+
+        self.resources -= cost
+
+        
     def copy(self) -> PlayerState:
         ps_copy = PlayerState()
         ps_copy.resources = self.resources.copy()

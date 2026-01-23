@@ -37,4 +37,3 @@ def random_strategy(player: PlayerState, state: GameState):
         e = random.choice(list(allowed_edges))
         player.roads.add(int(e))
         print(f"    Placed road at edge {EDGE_VERTEX_INDICES[int(e)]}")
-        

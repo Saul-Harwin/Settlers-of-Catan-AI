@@ -17,7 +17,7 @@ game_state = GameState(board, players, robber_hex, turn, rng)
 # draw(game_state)
 
 # simulate 5 turns
-simulate_game(game_state, n_turns=9, visualise=True)
+simulate_game(game_state, n_turns=3, visualise=True)
 
 
 # visualise final state
