@@ -5,6 +5,7 @@ import numpy as np
 
 def can_place_road(player: PlayerState, edge: int, state: GameState) -> bool:
     game_edges = state.get_edges()
+    game_vertices = state.get_vertices()
     
     # 1. Is edge free?
     if game_edges[edge] != 0:
@@ -16,7 +17,16 @@ def can_place_road(player: PlayerState, edge: int, state: GameState) -> bool:
     if is_robber_blocking(state, (v1, v2)):
         return False
     
-    # 3. Is it connected to player's roads or settlements?
+    # 3. Is it blocked by someone else's settlement/city?
+    other_player_vertices = set()
+    for p in state.players:
+        if p != player:
+            other_player_vertices |= p.settlements | p.cities
+            
+    if v1 in other_player_vertices or v2 in other_player_vertices:
+        return False
+    
+    # 4. Is it connected to player's roads or settlements?
     if settlement_reachable(player, v1) or settlement_reachable(player, v2):
         return True
     
