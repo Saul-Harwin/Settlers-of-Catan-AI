@@ -135,8 +135,10 @@ class PlayerState:
         if not np.all(self.resources >= cost):
             raise ValueError("Player cannot afford cost")
 
-        self.resources -= cost
-
+            print(self.resources, cost)
+            self.resources -= cost
+    def give(self, resources: np.ndarray) -> None:
+        self.resources += resources
         
     def copy(self) -> PlayerState:
         ps_copy = PlayerState()

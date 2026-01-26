@@ -1,4 +1,4 @@
-from engine.state import GameState
+from engine.state import GameState, PlayerState
 from logic.strategies import random_strategy
 from tools.visualiser import draw, draw_many_states
 import matplotlib.pyplot as plt
@@ -9,16 +9,24 @@ from map.geometry import TILE_VERTICES
 
 def simulate_game(game_state: GameState, n_turns: int = 10, visualise: bool = True) -> GameState:
     game_states = []
-    
+        
     for t in range(n_turns):
         print(game_state)
         
-        dice_roll(game_state, debug=True)
+        # Initial Turn a bit different people pick first settlement 
+        if t == 0:
+            for i in range(2):
+                for player in game_state.players:
+                    random_strategy(player, game_state)
+            starting_resources(game_state, player, list(player.settlements)[0])
         
-        print("\n------------------------  Build Phase  ------------------------")
-        for i, player in enumerate(game_state.players):
-            print(f"\nPlayer {i}:")
-            random_strategy(player, game_state)
+        else:
+            dice_roll(game_state, debug=True)
+            
+            print("\n------------------------  Build Phase  ------------------------")
+            for i, player in enumerate(game_state.players):
+                print(f"\nPlayer {i}:")
+                random_strategy(player, game_state)
         
         game_states.append(game_state.copy())        
         game_state.turn += 1
@@ -31,7 +39,7 @@ def simulate_game(game_state: GameState, n_turns: int = 10, visualise: bool = Tr
         # fig, ax = plt.subplots(figsize=(10, 10))  # adjusted aspect ratio
         # draw_many_states(game_states, ax)
             
-    return game_state
+    return game_states
 
 def dice_roll(state: GameState, debug: bool):
     # Roll the dice
@@ -66,9 +74,22 @@ def dice_roll(state: GameState, debug: bool):
                 if debug:
                     resource_types = ["Desert", "Clay", "Wood", "Sheep", "Wheat", "Rock"]
                     print(f"Player {player_idx} has received {count} {resource_types[resource]}")
-
-                
             
+def starting_resources(state: GameState, player: PlayerState, vertex: int) -> None:
+    resources = np.zeros(5, dtype=np.uint8)    
     
+    for i in range(len(TILE_VERTICES)):
+        # If neighbouring
+        if vertex in TILE_VERTICES[i]:
+            terrain = state.board.hex_terrain[i]
+            
+            if terrain == 0:
+                continue  # desert
+            
+            terrain -= 1            
+            resources[terrain] +=  1
+        else:
+            continue
 
+    player.give(resources)
     
