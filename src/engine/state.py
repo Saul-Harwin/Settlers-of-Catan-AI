@@ -7,12 +7,12 @@ import random
 # region State data structure -----------------------------------------------------------
 # tiles ---------------------------------------------------------------------------------
 """
-    0: Wheat   = 4
-    1: Wood    = 4
-    2: Sheep   = 4
-    3: Clay    = 3
-    4: Rock    = 3
-    5: Dessert = 1
+    0: Dessert = 1
+    1: Clay    = 3
+    2: Wood    = 4
+    3: Sheep   = 4
+    4: Wheat   = 4
+    5: Rock    = 3
 """
 
 #  numbers ------------------------------------------------------------------------------
@@ -102,8 +102,7 @@ class GameState:
         
         
     def __str__(self) -> str:
-        start = f"\n--------------------------------------\nGame State: turn={self.turn}\n--------------------------------------\n"
-        end = f"--------------------------------------\n"
+        start = f"\n-------------------------------------------------------------------------------------------------------------\n                                              Game State: turn={self.turn} \n-------------------------------------------------------------------------------------------------------------\n"
         
         robber_summary = f"  Robber is on hex {self.robber_hex}"
         
@@ -122,7 +121,7 @@ class GameState:
                 f"    Victory points ('playerState.victory_points'): {p.victory_points}\n"
             )
         
-        return "\n".join([start, robber_summary, board_summary, players_summary, end])
+        return "\n".join([start, robber_summary, board_summary, players_summary])
         
 class PlayerState:
     def __init__(self):
@@ -131,6 +130,15 @@ class PlayerState:
         self.cities = set()
         self.roads = set()
         self.victory_points = 0
+        
+    def charge(self, cost: np.ndarray) -> None:
+        if not np.all(self.resources >= cost):
+            raise ValueError("Player cannot afford cost")
+
+            print(self.resources, cost)
+            self.resources -= cost
+    def give(self, resources: np.ndarray) -> None:
+        self.resources += resources
         
     def copy(self) -> PlayerState:
         ps_copy = PlayerState()
