@@ -141,7 +141,6 @@ def draw_robber(ax, robber_hex):
         zorder=2
     ))
 
-
 def draw_vertex_numbers(ax, vertex_numbers):
     """
     Draw vertex numbers for debugging.
@@ -161,7 +160,6 @@ def draw_vertex_numbers(ax, vertex_numbers):
             color="red",
             zorder=5
         )
-
 
 def draw_many_states(game_states, axes):
     """
@@ -202,9 +200,6 @@ def draw_single_state(game_state, ax):
     ax.set_aspect("equal")
     ax.axis("off")
     ax.set_title(f"Turn : {game_state.turn}")
-    
-    
-    
     
 def draw(game_states):
     figsize=(12, 12)

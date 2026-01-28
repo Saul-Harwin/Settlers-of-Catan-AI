@@ -1,7 +1,7 @@
 import random
 from map.board import Board
 from engine.state import GameState, PlayerState
-from engine.rules import can_place_settlement, can_place_road
+from engine.rules import can_place_settlement, can_place_road, can_afford
 from map.geometry import EDGE_VERTEX_INDICES, TILE_VERTICES, VERTEX_NEIGHBORS
 import numpy as np
 
@@ -9,10 +9,13 @@ def random_strategy(player: PlayerState, state: GameState):
     """
     Example minimal strategy: randomly place a road, settlement, or city if possible.
     For testing the simulator.
+    
+    [Wood, Brick, Sheep, Wheat, Ore]
     """
     # We need to add these two variable to a costs dictionary their own file
     road_cost = np.array([1, 1, 0, 0, 0])
     settlement_cost = np.array([1, 1, 1, 1, 0])
+    city_cost = np.array([0, 0, 0, 2, 3])
     
     
     # For now, just randomly pick an empty allowed vertex for settlement
@@ -59,4 +62,15 @@ def random_strategy(player: PlayerState, state: GameState):
         
         if state.turn > 0:
             player.charge(cost=road_cost)
+            
+    # Randomly upgrade settlements to Cities
+    settlements = list(player.settlements)
+    s = random.choice(settlements)
+    
+    # If player can afford it
+    if can_afford(player.resources, city_cost):
+        player.cities.add(int(s))
+        player.charge(city_cost)
+        player.settlements.remove(int(s))
+        
     
