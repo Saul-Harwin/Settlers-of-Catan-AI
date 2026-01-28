@@ -89,6 +89,7 @@ class GameState:
                         
         return vertices
     
+    
     def get_edges(self):
         players = self.players
         # Edges: 0=empty, 1-4=player roads
@@ -98,7 +99,8 @@ class GameState:
                 edges[e] = player_idx + 1
                 
         return edges
-            
+        
+        
     def __str__(self) -> str:
         start = f"\n-------------------------------------------------------------------------------------------------------------\n                                              Game State: turn={self.turn} \n-------------------------------------------------------------------------------------------------------------\n"
         
