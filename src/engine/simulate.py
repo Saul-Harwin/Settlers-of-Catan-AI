@@ -18,7 +18,9 @@ def simulate_game(game_state: GameState, n_turns: int = 10, visualise: bool = Tr
             for i in range(2):
                 for player in game_state.players:
                     random_strategy(player, game_state)
-            starting_resources(game_state, player, list(player.settlements)[0])
+            
+            # Get the starting resources from the second settlement placed
+            starting_resources(game_state, player, list(player.settlements)[-1])
         
         else:
             dice_roll(game_state, debug=True)
