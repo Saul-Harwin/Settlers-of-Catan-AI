@@ -35,7 +35,17 @@ def random_strategy(player: PlayerState, state: GameState):
 
 
     # Randomly place a road (just pick any empty allowed edge)
-    free_edges = set(range(72)) - set.union(*(p.roads for p in state.players))
+    if state.turn > 0:
+        free_edges = set(range(72)) - set.union(*(p.roads for p in state.players))
+    else:
+        incident_edges = {
+            e for e, (v1, v2) in enumerate(EDGE_VERTEX_INDICES)
+            if v1 == v or v2 == v
+        }
+
+        occupied_edges = set.union(*(p.roads for p in state.players))
+        free_edges = incident_edges - occupied_edges
+                         
     allowed_edges = np.array([])
 
     for edge in free_edges:
