@@ -15,7 +15,8 @@ def seed_starting_positions(state):
         
         v = random.choice(list(free_vertices))
         player.settlements.add(v)
-
+        
+        
         # choose any incident edge
         neighbough_vertices = VERTEX_NEIGHBORS[v]
         
@@ -28,6 +29,7 @@ def seed_starting_positions(state):
         edge = random.choice(list(edge_indices))
         
         player.roads.add(edge)
+        player.victory_points += 1
 
 def simulate_game(game_state: GameState, n_turns: int = 10, visualise: bool = True) -> GameState:
     game_states = []
@@ -53,11 +55,15 @@ def simulate_game(game_state: GameState, n_turns: int = 10, visualise: bool = Tr
 
         step(game_state, [random_policy])
         game_states.append(game_state.copy())
+        
+        if any(p.victory_points >= 10 for p in game_state.players):
+            print("Game over!")
+            break
 
     if visualise:
         draw(game_states)
 
-    return game_state
+    return game_states[-1]
     
 def starting_resources(state: GameState):
     # [wood, brick, sheep, wheat, rock]
