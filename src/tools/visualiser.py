@@ -210,7 +210,7 @@ def draw(game_states):
     figsize=(12, 12)
     
     # If we are trying to render multiple states
-    if len(game_states) > 1:
+    if isinstance(game_states, list):
         cols = 3
         n = len(game_states)
         rows = math.ceil(n / cols)
@@ -226,7 +226,7 @@ def draw(game_states):
         draw_many_states(game_states, axes)
     else:
         fig, ax = plt.subplots(figsize=figsize)
-        draw_single_state(game_states[0], ax)
+        draw_single_state(game_states, ax)
 
 
     # Make the figure fullscreen

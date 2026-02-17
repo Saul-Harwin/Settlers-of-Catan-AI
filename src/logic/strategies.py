@@ -55,8 +55,15 @@ def random_strategy(player: PlayerState, state: GameState):
     if allowed_edges.size > 0:
         e = random.choice(list(allowed_edges))
         player.roads.add(int(e))
+<<<<<<< Updated upstream:src/logic/strategies.py
         print(f"    Placed road at edge {EDGE_VERTEX_INDICES[int(e)]}")
         
         if state.turn > 0:
             player.charge(cost=road_cost)
     
+=======
+        print(f"Player placed road at edge {EDGE_VERTEX_INDICES[int(e)]}")
+        
+def random_policy(state: GameState, player_idx, legal_actions):
+    return random.choice(legal_actions)
+>>>>>>> Stashed changes:src/simulation/strategies.py
