@@ -127,10 +127,6 @@ def is_robber_blocking(state: GameState, target: int) -> bool:
         else:
             return False
     
-<<<<<<< Updated upstream
-def can_afford(resources, cost) -> bool:
-    return all(r >= c for r, c in zip(resources, cost))
-=======
 def legal_actions(state: GameState, player_idx: int) -> list[GameAction]:
     # [wood, brick, sheep, wheat, rock]
     player = state.players[player_idx]
@@ -240,4 +236,3 @@ def _edge_blocked_by_opponent(state, player_idx, v1, v2):
 
     
     
->>>>>>> Stashed changes
