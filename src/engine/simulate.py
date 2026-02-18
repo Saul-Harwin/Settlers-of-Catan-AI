@@ -83,8 +83,9 @@ def simulate_game(game_state: GameState, n_turns: int = 10, visualise: bool = Tr
     
     game_states.append(game_state.copy())
     
-    for _ in range(n_turns):
-        print(game_states[_])
+    for turn in range(n_turns):
+        print(turn)
+        print(game_state)
         roll_val = roll(rng)
         
         if roll_val == 7:
@@ -95,8 +96,9 @@ def simulate_game(game_state: GameState, n_turns: int = 10, visualise: bool = Tr
         
         resource_production(game_state, roll_val)
 
-        step(game_state, [RandomStrategy(), RandomStrategy(), RandomStrategy(), HeuristicStrategy()])
-        game_states.append(game_state.copy())
+        while game_state.turn == turn:
+            step(game_state, [RandomStrategy(), RandomStrategy(), RandomStrategy(), HeuristicStrategy()])
+            game_states.append(game_state.copy())
         
         if any(p.victory_points >= 10 for p in game_state.players):
             print("Game over!")
@@ -105,7 +107,7 @@ def simulate_game(game_state: GameState, n_turns: int = 10, visualise: bool = Tr
     if visualise:
         draw(game_states)
 
-    return game_states[-1]
+    return game_states
     
 def starting_resources(state: GameState):
     # [wood, brick, sheep, wheat, rock]
