@@ -12,7 +12,6 @@ board = generate_board(rng)
 players = [PlayerState() for _ in range(4)]
 
 robber_hex = np.where(board.hex_terrain == 0)[0][0]
-print(robber_hex)
 turn = 0
 
 game_state = GameState(board, players, robber_hex, turn, rng)

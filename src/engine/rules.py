@@ -210,14 +210,12 @@ def get_legal_settlement_vertices(state: GameState, player_idx: int, require_con
             
             for road_idx in player.roads:
                 if v in EDGE_VERTEX_INDICES[road_idx]:
-                    print(v, EDGE_VERTEX_INDICES[road_idx])
                     connects = True
                     break
 
             if not connects:
                 continue
         
-        print(v)
         legal.add(v)
 
     return legal
