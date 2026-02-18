@@ -1,41 +1,83 @@
-from engine.state import GameState
-from logic.strategies import random_strategy, random_policy
-from tools.visualiser import draw, draw_many_states
 import matplotlib.pyplot as plt
+import numpy as np
+import random
+
+from engine.state import GameState
 from engine.action import GameAction, BuildRoad, BuildSettlement, BuildCity, EndTurn
 from engine.rules import get_legal_edges, get_legal_settlement_vertices, get_upgradeable_cities, legal_actions
-import random
-import numpy as np
-from map.geometry import EDGE_VERTEX_INDICES, TILE_VERTICES, VERTEX_NEIGHBORS
-    
-def seed_starting_positions(state):
-    for i, player in enumerate(state.players):
-        free_edges = set(range(72)) - set.union(*(p.roads for p in state.players))
-        free_vertices = get_legal_settlement_vertices(state, i, require_connection=False)
-        
-        v = random.choice(list(free_vertices))
-        player.settlements.add(v)
-        
-        
-        # choose any incident edge
-        neighbough_vertices = VERTEX_NEIGHBORS[v]
-        
-        incident_edges = set()
-        for nv in neighbough_vertices:
-            edge = (v, nv) if v < nv else (nv, v)
-            incident_edges.add(edge)
-        
-        edge_indices = set(idx for idx, (v1, v2) in enumerate(EDGE_VERTEX_INDICES) if (v1, v2) in incident_edges)
-        edge = random.choice(list(edge_indices))
-        
-        player.roads.add(edge)
-        player.victory_points += 1
 
-def simulate_game(game_state: GameState, n_turns: int = 10, visualise: bool = True) -> GameState:
-    game_states = []
+from logic.strategies import random_strategy, RandomStrategy, HeuristicStrategy
+
+from tools.visualiser import draw, draw_many_states
+
+from map.geometry import EDGE_VERTEX_INDICES, TILE_VERTICES, VERTEX_NEIGHBORS
+
+def seed_starting_positions(state, player_idx, strategy, rng):
+    """
+    Place each player's starting settlement and one adjacent road using the given strategy.
+    Works with any strategy that implements `score_vertex(state, vertex)`.
+    """
+    #  Player
+    player = state.players[player_idx]
     
-    seed_starting_positions(game_state)
-    seed_starting_positions(game_state)
+    # Get all legal starting vertices (no connection required)
+    free_vertices = get_legal_settlement_vertices(state, player_idx, require_connection=False)
+    if not free_vertices:
+        return
+
+    # Strategy selects the best vertex
+    if hasattr(strategy, "score_vertex"):
+        best_vertex = max(free_vertices, key=lambda v: strategy.score_vertex(state, v))
+    else:
+        # fallback to random selection
+        best_vertex = rng.choice(list(free_vertices))
+
+    player.settlements.add(best_vertex)
+    player.victory_points += 1
+
+    # Find incident edges for that vertex
+    neigh_vertices = VERTEX_NEIGHBORS[best_vertex]
+    incident_edges = set()
+    for nv in neigh_vertices:
+        edge_tuple = (min(best_vertex, nv), max(best_vertex, nv))
+        for idx, (v1, v2) in enumerate(EDGE_VERTEX_INDICES):
+            if (v1, v2) == edge_tuple:
+                incident_edges.add(idx)
+
+    # Only choose edges that are free
+    occupied_edges = set().union(*(p.roads for p in state.players))
+    free_incident_edges = incident_edges - occupied_edges
+    if not free_incident_edges:
+        return
+
+    # Strategy selects the best road edge based on potential vertex scores
+    if hasattr(strategy, "score_vertex"):
+        best_edge = max(
+            free_incident_edges,
+            key=lambda e: max(
+                strategy.score_vertex(state, EDGE_VERTEX_INDICES[e][0]),
+                strategy.score_vertex(state, EDGE_VERTEX_INDICES[e][1])
+            )
+        )
+    else:
+        best_edge = rng.choice(list(free_incident_edges))
+
+    player.roads.add(best_edge)
+
+def simulate_game(game_state: GameState, n_turns: int = 10, visualise: bool = True, rng: random.Random = random) -> GameState:
+    game_states = []
+    strategies = [HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy()]
+    
+    
+    for i in range(len(game_state.players)):
+        seed_starting_positions(game_state, i, strategies[i], rng)
+
+    draw(game_state)
+
+    for i in range(len(game_state.players)):
+        seed_starting_positions(game_state, i, strategies[i], rng)
+    
+    draw(game_state)
     
     starting_resources(game_state)
     
@@ -43,7 +85,7 @@ def simulate_game(game_state: GameState, n_turns: int = 10, visualise: bool = Tr
     
     for _ in range(n_turns):
         print(game_states[_])
-        roll_val = roll()
+        roll_val = roll(rng)
         
         if roll_val == 7:
             print("Robber activated! Moving robber to random hex. (No stealing implemented yet)")
@@ -53,7 +95,7 @@ def simulate_game(game_state: GameState, n_turns: int = 10, visualise: bool = Tr
         
         resource_production(game_state, roll_val)
 
-        step(game_state, [random_policy])
+        step(game_state, [RandomStrategy(), RandomStrategy(), RandomStrategy(), HeuristicStrategy()])
         game_states.append(game_state.copy())
         
         if any(p.victory_points >= 10 for p in game_state.players):
@@ -78,8 +120,8 @@ def starting_resources(state: GameState):
             if terrain > 0:   # ignore desert
                 player.resources[terrain - 1] += 1
 
-def roll() -> int:
-    return random.randint(1, 6) + random.randint(1, 6)
+def roll(rng) -> int:
+    return rng.randint(1, 6) + rng.randint(1, 6)
 
 def resource_production(state: GameState, roll: int) -> None:
     hexes = np.where(state.board.hex_numbers == roll)[0]
@@ -98,15 +140,14 @@ def resource_production(state: GameState, roll: int) -> None:
                 if v in vertices:
                     player.resources[state.board.hex_terrain[hex_idx]-1] += 2
                     
-def step(state: GameState, policies):
+def step(state: GameState, strategies):
     player_idx = state.turn % len(state.players)
 
     # policy = policies[player_idx]
-    policy = policies[0]    # for testing, use same policy for all players
-    
-    actions = legal_actions(state, player_idx)
-    chosen = policy(state, player_idx, actions)
+    strategy = strategies[player_idx]    # for testing, use same policy for all players
+    chosen = strategy.select_action(state)
 
+    actions = legal_actions(state, player_idx)
     print(f"Player {player_idx + 1} chooses action: {chosen} out of {actions}")
 
     apply_action(state, player_idx, chosen)

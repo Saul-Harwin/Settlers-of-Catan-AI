@@ -18,7 +18,7 @@ turn = 0
 game_state = GameState(board, players, robber_hex, turn, rng)
 
 # simulate n turns
-game_state = simulate_game(game_state, n_turns=500, visualise=False)
+game_state = simulate_game(game_state, n_turns=100, visualise=False, rng=rng)
 print(game_state)
 
 draw(game_state)
