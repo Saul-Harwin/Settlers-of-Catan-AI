@@ -2,7 +2,6 @@ from __future__ import annotations
 import numpy as np
 from dataclasses import dataclass
 import random
-# from src.map.board import Board
 
 # region State data structure -----------------------------------------------------------
 # tiles ---------------------------------------------------------------------------------
