@@ -88,6 +88,8 @@ class GameState:
                         
         return vertices
     
+    def get_current_player_idx(self) -> int:
+        return self.turn % len(self.players) 
     
     def get_edges(self):
         players = self.players
@@ -98,8 +100,7 @@ class GameState:
                 edges[e] = player_idx + 1
                 
         return edges
-        
-        
+            
     def __str__(self) -> str:
         start = f"\n-------------------------------------------------------------------------------------------------------------\n                                              Game State: turn={self.turn} \n-------------------------------------------------------------------------------------------------------------\n"
         
@@ -121,7 +122,7 @@ class GameState:
             )
         
         return "\n".join([start, robber_summary, board_summary, players_summary])
-        
+            
 class PlayerState:
     def __init__(self):
         self.resources = np.zeros(5, dtype=np.uint8)  # Wheat, Wood, Sheep, Clay, Rock

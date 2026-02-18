@@ -188,7 +188,7 @@ def get_legal_edges(state: GameState, player_idx: int) -> set[int]:
     
 def get_legal_settlement_vertices(state: GameState, player_idx: int, require_connection=True) -> set[int]:
     player = state.players[player_idx]
-
+    
     # All occupied vertices
     occupied_vertices = set().union(*(p.settlements | p.cities for p in state.players))
 
@@ -208,14 +208,16 @@ def get_legal_settlement_vertices(state: GameState, player_idx: int, require_con
         if require_connection:
             connects = False
             
-            for edge in EDGE_VERTEX_INDICES[v]:
-                if edge in player.roads:
+            for road_idx in player.roads:
+                if v in EDGE_VERTEX_INDICES[road_idx]:
+                    print(v, EDGE_VERTEX_INDICES[road_idx])
                     connects = True
                     break
 
             if not connects:
                 continue
-
+        
+        print(v)
         legal.add(v)
 
     return legal
@@ -234,5 +236,14 @@ def _edge_blocked_by_opponent(state, player_idx, v1, v2):
             return True
     return False
 
-    
+def is_vertex_connected_to_network(vertex: int, player) -> bool:
+    """
+    Returns True if the vertex is connected to at least one
+    of the player's roads.
+    """
+    for edge in EDGE_VERTEX_INDICES[vertex]:
+        if edge in player.roads:
+            return True
+
+    return False    
     
