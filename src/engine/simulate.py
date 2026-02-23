@@ -1,72 +1,118 @@
 import matplotlib.pyplot as plt
+import copy
 import numpy as np
 import random
+from dataclasses import dataclass
+from enum import IntEnum
 
 from engine.state import GameState
 from engine.action import GameAction, BuildRoad, BuildSettlement, BuildCity, EndTurn
 from engine.rules import get_legal_edges, get_legal_settlement_vertices, get_upgradeable_cities, legal_actions
 
-from logic.strategies import random_strategy, RandomStrategy, HeuristicStrategy
+from logic.strategies import RandomStrategy, HeuristicStrategy
 
 from tools.visualiser import draw, draw_many_states
 
-from map.geometry import EDGE_VERTEX_INDICES, TILE_VERTICES, VERTEX_NEIGHBORS
+from map.helpers import adjacent_hexes
+from map.geometry import EDGE_VERTEX_INDICES, TILE_VERTICES, VERTEX_NEIGHBORS, PIP_WEIGHT
+
+@dataclass
+class EvalWeights:
+    vp_weight: float = 10.0
+    settlement_weight: float = 2.0
+    city_weight: float = 3.0
+    road_weight: float = 1.0
+    resource_weight: float = 0.5
+    
+class Resource(IntEnum):
+    WOOD  = 0
+    BRICKS  = 1
+    SHEEP = 2
+    WHEAT = 3
+    ROCK  = 4
 
 def seed_starting_positions(state, player_idx, strategy, rng):
     """
-    Place each player's starting settlement and one adjacent road using the given strategy.
-    Works with any strategy that implements `score_vertex(state, vertex)`.
+    Place starting settlement + adjacent road.
+    Uses full forward evaluation if strategy supports it.
+    Falls back to random otherwise.
     """
-    #  Player
+
+    from engine.simulate import evaluate_state, EvalWeights
+
     player = state.players[player_idx]
-    
-    # Get all legal starting vertices (no connection required)
-    free_vertices = get_legal_settlement_vertices(state, player_idx, require_connection=False)
+
+    # All legal settlement vertices (no connection required during setup)
+    free_vertices = get_legal_settlement_vertices(
+        state, player_idx, require_connection=False
+    )
+
     if not free_vertices:
         return
 
-    # Strategy selects the best vertex
-    if hasattr(strategy, "score_vertex"):
-        best_vertex = max(free_vertices, key=lambda v: strategy.score_vertex(state, v))
-    else:
-        # fallback to random selection
+    # ------------------------------------------------------------------
+    # RANDOM STRATEGY
+    # ------------------------------------------------------------------
+    if not hasattr(strategy, "select_action"):
         best_vertex = rng.choice(list(free_vertices))
-
-    player.settlements.add(best_vertex)
-    player.victory_points += 1
-
-    # Find incident edges for that vertex
-    neigh_vertices = VERTEX_NEIGHBORS[best_vertex]
-    incident_edges = set()
-    for nv in neigh_vertices:
-        edge_tuple = (min(best_vertex, nv), max(best_vertex, nv))
-        for idx, (v1, v2) in enumerate(EDGE_VERTEX_INDICES):
-            if (v1, v2) == edge_tuple:
-                incident_edges.add(idx)
-
-    # Only choose edges that are free
-    occupied_edges = set().union(*(p.roads for p in state.players))
-    free_incident_edges = incident_edges - occupied_edges
-    if not free_incident_edges:
+        player.settlements.add(best_vertex)
+        player.victory_points += 1
+        _place_random_adjacent_road(state, player_idx, best_vertex, rng)
         return
 
-    # Strategy selects the best road edge based on potential vertex scores
-    if hasattr(strategy, "score_vertex"):
-        best_edge = max(
-            free_incident_edges,
-            key=lambda e: max(
-                strategy.score_vertex(state, EDGE_VERTEX_INDICES[e][0]),
-                strategy.score_vertex(state, EDGE_VERTEX_INDICES[e][1])
-            )
-        )
-    else:
-        best_edge = rng.choice(list(free_incident_edges))
+    # ------------------------------------------------------------------
+    # HEURISTIC / EVALUATION-BASED STRATEGY
+    # ------------------------------------------------------------------
 
+    best_combo = None
+    best_score = -float("inf")
+    weights = EvalWeights()
+
+    for vertex in free_vertices:
+
+        # Find all free adjacent roads for this vertex
+        neigh_vertices = VERTEX_NEIGHBORS[vertex]
+        candidate_edges = []
+
+        occupied_edges = set().union(*(p.roads for p in state.players))
+
+        for nv in neigh_vertices:
+            edge_tuple = (min(vertex, nv), max(vertex, nv))
+            for idx, (v1, v2) in enumerate(EDGE_VERTEX_INDICES):
+                if (v1, v2) == edge_tuple and idx not in occupied_edges:
+                    candidate_edges.append(idx)
+
+        if not candidate_edges:
+            continue
+
+        # Evaluate each (settlement + road) combination
+        for edge_idx in candidate_edges:
+
+            hypothetical = state.copy()
+
+            hp = hypothetical.players[player_idx]
+            hp.settlements.add(vertex)
+            hp.victory_points += 1
+            hp.roads.add(edge_idx)
+
+            score = evaluate_state(hypothetical, player_idx, weights)
+
+            if score > best_score:
+                best_score = score
+                best_combo = (vertex, edge_idx)
+
+    if best_combo is None:
+        return
+
+    # Apply best found combination
+    best_vertex, best_edge = best_combo
+    player.settlements.add(best_vertex)
+    player.victory_points += 1
     player.roads.add(best_edge)
 
 def simulate_game(game_state: GameState, n_turns: int = 10, visualise: bool = True, rng: random.Random = random) -> GameState:
     game_states = []
-    strategies = [HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy()]
+    strategies = [RandomStrategy(), RandomStrategy(), RandomStrategy(), HeuristicStrategy()]
     
     
     for i in range(len(game_state.players)):
@@ -97,7 +143,7 @@ def simulate_game(game_state: GameState, n_turns: int = 10, visualise: bool = Tr
         resource_production(game_state, roll_val)
 
         while game_state.turn == turn:
-            step(game_state, [RandomStrategy(), RandomStrategy(), RandomStrategy(), HeuristicStrategy()])
+            step(game_state, strategies, rng)
             game_states.append(game_state.copy())
         
         if any(p.victory_points >= 10 for p in game_state.players):
@@ -142,37 +188,23 @@ def resource_production(state: GameState, roll: int) -> None:
                 if v in vertices:
                     player.resources[state.board.hex_terrain[hex_idx]-1] += 2
                     
-def step(state: GameState, strategies):
-    player_idx = state.turn % len(state.players)
+def step(state: GameState, strategies, rng):
+    player_idx = state.get_current_player_idx()
 
     # policy = policies[player_idx]
     strategy = strategies[player_idx]    # for testing, use same policy for all players
-    chosen = strategy.select_action(state)
+    chosen = strategy.select_action(state, rng)
 
     actions = legal_actions(state, player_idx)
     print(f"Player {player_idx + 1} chooses action: {chosen} out of {actions}")
 
-    apply_action(state, player_idx, chosen)
+    production = compute_production_profile(state, state.players[player_idx])
+    prod_values = np.array(production)
     
-def apply_action(state: GameState, player_idx: int, action: GameAction) -> None:
-    
-    if isinstance(action, BuildRoad):
-        build_road(state, player_idx, action.edge)
-
-    elif isinstance(action, BuildSettlement):
-        build_settlement(state, player_idx, action.vertex)
-
-    elif isinstance(action, BuildCity):
-        build_city(state, player_idx, action.vertex)
-
-    elif isinstance(action, EndTurn):
-        state.turn += 1
-
-    else:
-        raise ValueError("Unknown action type")
+    state = execute_action(state, player_idx, chosen)
 
 def build_road(state: GameState, player_idx: int, edge: int):
-    # [wood, brick, sheep, wheat, rock]
+    # [wood, brick, sheep, wheat, ore]
     ROAD_COST = np.array([1, 1, 0, 0, 0], dtype=np.uint8)
     
     player = state.players[player_idx]
@@ -193,7 +225,7 @@ def build_road(state: GameState, player_idx: int, edge: int):
     player.roads.add(edge)
     
 def build_settlement(state: GameState, player_idx: int, vertex: int) -> None:
-    # [wood, brick, sheep, wheat, rock]
+    # [wood, brick, sheep, wheat, ore]
     SETTLEMENT_COST = np.array([1, 1, 1, 1, 0], dtype=np.uint8)
     
     player = state.players[player_idx]
@@ -212,7 +244,7 @@ def build_settlement(state: GameState, player_idx: int, vertex: int) -> None:
     player.victory_points += 1
 
 def build_city(state: GameState, player_idx: int, vertex: int) -> None:
-    # [wood, brick, sheep, wheat, rock]
+    # [wood, brick, sheep, wheat, ore]
     CITY_COST = np.array([0, 0, 0, 2, 3], dtype=np.uint8)
 
     player = state.players[player_idx]
@@ -237,3 +269,137 @@ def build_city(state: GameState, player_idx: int, vertex: int) -> None:
 
 def move_robber(state: GameState, new_hex: int) -> None:
     state.robber_hex = new_hex
+
+def evaluate_state(state, player_idx: int, w: EvalWeights) -> float:
+    player = state.players[player_idx]
+    score = 0.0
+
+    # Victory points
+    score += w.vp_weight * player.victory_points
+
+    # Structures
+    score += w.settlement_weight * len(player.settlements)
+    score += w.city_weight * len(player.cities)
+    score += w.road_weight * len(player.roads)
+
+    # Resources --------------------------------------
+    # score += w.resource_weight * sum(player.resources)
+    
+    
+    # 1. Resource Production Potential
+    for vertex in player.settlements | player.cities:
+        for hex_idx in adjacent_hexes(vertex):
+            if hex_idx == state.robber_hex:
+                continue
+            number = state.board.hex_numbers[hex_idx]
+            # Each hex contributes PIP_WEIGHT[number] to expected production
+            score += w.resource_weight * PIP_WEIGHT.get(number, 0)
+
+
+    # 2. Resource Diversity
+    production = compute_production_profile(state, player)
+    prod_values = np.array(production)
+
+    # print(prod_values)
+
+    # Count resources with meaningful production
+    diversity = np.count_nonzero(prod_values > 0)
+
+    score += w.resource_weight * diversity
+
+    # Phase adjustment
+    score *= 1.0 + 0.01 * state.turn
+
+    return score
+
+def apply_action(state: GameState, player_idx: int, action: GameAction) -> GameAction:
+        # Local import avoids circular dependency
+        from engine.state import GameState  
+        
+        new_state = copy.deepcopy(state)
+        # player = new_state.players[player_idx]
+        
+        if isinstance(action, BuildRoad):
+            build_road(new_state, player_idx, action.edge)
+
+        elif isinstance(action, BuildSettlement):
+            build_settlement(new_state, player_idx, action.vertex)
+
+        elif isinstance(action, BuildCity):
+            build_city(new_state, player_idx, action.vertex)
+
+        elif isinstance(action, EndTurn):
+            new_state.turn += 1
+
+        else:
+            raise ValueError("Unknown action type")
+        
+        return new_state
+
+def execute_action(state, player_idx, action):
+    if isinstance(action, BuildRoad):
+        build_road(state, player_idx, action.edge)
+
+    elif isinstance(action, BuildSettlement):
+        build_settlement(state, player_idx, action.vertex)
+
+    elif isinstance(action, BuildCity):
+        build_city(state, player_idx, action.vertex)
+
+    elif isinstance(action, EndTurn):
+        state.turn += 1
+
+    else:
+        raise ValueError("Unknown action type")
+    
+def _place_random_adjacent_road(state, player_idx, vertex, rng):
+    neigh_vertices = VERTEX_NEIGHBORS[vertex]
+    occupied_edges = set().union(*(p.roads for p in state.players))
+
+    incident_edges = []
+    for nv in neigh_vertices:
+        edge_tuple = (min(vertex, nv), max(vertex, nv))
+        for idx, (v1, v2) in enumerate(EDGE_VERTEX_INDICES):
+            if (v1, v2) == edge_tuple and idx not in occupied_edges:
+                incident_edges.append(idx)
+
+    if incident_edges:
+        state.players[player_idx].roads.add(rng.choice(incident_edges))
+    
+def compute_production_profile(state, player):
+    board = state.board
+    production = np.zeros(5, dtype=np.uint8)
+
+    # Settlements
+    for vertex in player.settlements:
+        for hex_idx in adjacent_hexes(vertex):
+            if hex_idx == state.robber_hex:
+                continue
+            
+            resource = board.hex_terrain[hex_idx] - 1
+            number   = board.hex_numbers[hex_idx]
+            
+            # If number is 0 then skip because it is a dessert tile
+            if number == 0:
+                continue
+            
+            production[resource] += PIP_WEIGHT.get(number, 0)
+
+    # Cities (double production)
+    for vertex in player.cities:
+        for hex_idx in adjacent_hexes(vertex):
+            if hex_idx == state.robber_hex:
+                continue
+
+            resource = board.hex_terrain[hex_idx] - 1
+            number   = board.hex_numbers[hex_idx]
+            
+            # If number is 0 then skip because it is a dessert tile
+            if number == 0:
+                continue
+            
+            production[resource] += 2 * PIP_WEIGHT.get(number, 0)
+
+    return production
+
+

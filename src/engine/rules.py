@@ -200,11 +200,15 @@ def get_legal_settlement_vertices(state: GameState, player_idx: int, require_con
         if v in occupied_vertices:
             continue
 
-        # 2. Distance rule
+        # 2. Robber Blocking?
+        if is_robber_blocking(state, v):
+            continue
+    
+        # 3. Distance rule
         if any(n in occupied_vertices for n in VERTEX_NEIGHBORS[v]):
             continue
 
-        # 3. Must connect to own road
+        # 4. Must connect to own road
         if require_connection:
             connects = False
             
@@ -222,7 +226,8 @@ def get_legal_settlement_vertices(state: GameState, player_idx: int, require_con
     
 def get_upgradeable_cities(state: GameState, player_idx: int) -> set[int]:
     player = state.players[player_idx]
-    return set(player.settlements)
+    
+    return set(player.settlements) - set(TILE_VERTICES[state.robber_hex])
     
 def _edge_blocked_by_opponent(state, player_idx, v1, v2):
     for i, p in enumerate(state.players):

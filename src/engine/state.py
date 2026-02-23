@@ -2,6 +2,10 @@ from __future__ import annotations
 import numpy as np
 from dataclasses import dataclass
 import random
+import copy
+from engine.action import BuildSettlement, BuildRoad, BuildCity, EndTurn, GameAction
+
+
 
 # region State data structure -----------------------------------------------------------
 # tiles ---------------------------------------------------------------------------------
@@ -101,6 +105,22 @@ class GameState:
                 
         return edges
             
+    def is_terminal(self) -> bool:
+        return any(p.victory_points >= 10 for p in self.players)
+
+    def get_winner(self) -> int | None:
+        for i, p in enumerate(self.players):
+            if p.victory_points >= 10:
+                return i
+        return None
+    
+    def get_current_player_idx(self) -> int:
+        """
+        Returns the index of the player whose turn it is.
+        Assumes turns cycle through the list of players.
+        """
+        return self.turn % len(self.players)
+    
     def __str__(self) -> str:
         start = f"\n-------------------------------------------------------------------------------------------------------------\n                                              Game State: turn={self.turn} \n-------------------------------------------------------------------------------------------------------------\n"
         
@@ -125,18 +145,19 @@ class GameState:
             
 class PlayerState:
     def __init__(self):
-        self.resources = np.zeros(5, dtype=np.uint8)  # Wheat, Wood, Sheep, Clay, Rock
+        self.resources = np.zeros(5, dtype=np.uint8)  # Wood, Bricks, Sheep, Wheat, Ore
         self.settlements = set()
         self.cities = set()
         self.roads = set()
         self.victory_points = 0
         
     def charge(self, cost: np.ndarray) -> None:
+        cost = cost.astype(self.resources.dtype)  # ensure same dtype
         if not np.all(self.resources >= cost):
-            raise ValueError("Player cannot afford cost")
-
-            print(self.resources, cost)
-            self.resources -= cost
+            raise ValueError(f"Player cannot afford cost: resources={self.resources}, cost={cost}")
+        
+        self.resources -= cost
+    
     def give(self, resources: np.ndarray) -> None:
         self.resources += resources
         

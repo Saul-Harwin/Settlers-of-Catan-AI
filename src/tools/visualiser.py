@@ -205,7 +205,6 @@ def draw_single_state(game_state, ax):
     
     draw_player_legend(ax, game_state)
     
-    
 def draw(game_states):
     figsize=(12, 12)
     
