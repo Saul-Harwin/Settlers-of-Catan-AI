@@ -1,6 +1,7 @@
 from engine.state import PlayerState, GameState
 from map.geometry import EDGE_VERTEX_INDICES, VERTEX_NEIGHBORS, TILE_VERTICES
 import numpy as np
+from engine.action import GameAction, BuildRoad, BuildSettlement, BuildCity, EndTurn
 
 
 def can_place_road(player: PlayerState, edge: int, state: GameState) -> bool:    
@@ -126,5 +127,126 @@ def is_robber_blocking(state: GameState, target: int) -> bool:
         else:
             return False
     
-def can_afford(resources, cost) -> bool:
-    return all(r >= c for r, c in zip(resources, cost))
+def legal_actions(state: GameState, player_idx: int) -> list[GameAction]:
+    # [wood, brick, sheep, wheat, rock]
+    player = state.players[player_idx]
+    actions = []
+    
+    # Roads
+    if player.resources[0] > 0 and player.resources[1] > 0:
+        for edge in get_legal_edges(state, player_idx):
+            actions.append(BuildRoad(edge))
+        
+    # Settlements
+    if player.resources[0] > 0 and player.resources[1] > 0 and player.resources[2] > 0 and player.resources[3] > 0:
+        for vertex in get_legal_settlement_vertices(state, player_idx, require_connection=True):
+            actions.append(BuildSettlement(vertex))
+
+    # Cities
+    if player.resources[3] > 1 and player.resources[4] > 2:
+        for vertex in get_upgradeable_cities(state, player_idx):
+            actions.append(BuildCity(vertex))
+        
+    actions.append(EndTurn())
+
+    return actions       
+        
+def get_legal_edges(state: GameState, player_idx: int) -> set[int]:
+    player = state.players[player_idx]
+
+    # All occupied edges
+    occupied = set().union(*(p.roads for p in state.players))
+
+    legal = set()
+
+    for edge_idx, (v1, v2) in enumerate(EDGE_VERTEX_INDICES):
+
+        # 1. Must be unoccupied
+        if edge_idx in occupied:
+            continue
+
+        # 2. Check robber isn't blocking it
+        if is_robber_blocking(state, (v1, v2)):
+            continue
+        
+        # 3. Is it connected to player's roads or settlements?
+        connects = False
+        
+        if settlement_reachable(player, v1) or settlement_reachable(player, v2):
+            connects = True
+
+        if not connects:
+            continue
+
+        # 3. Blocked by opponent settlement?
+        if _edge_blocked_by_opponent(state, player_idx, v1, v2):
+            continue
+
+        legal.add(edge_idx)
+
+    return legal
+    
+def get_legal_settlement_vertices(state: GameState, player_idx: int, require_connection=True) -> set[int]:
+    player = state.players[player_idx]
+    
+    # All occupied vertices
+    occupied_vertices = set().union(*(p.settlements | p.cities for p in state.players))
+
+    legal = set()
+
+    for v in range(len(VERTEX_NEIGHBORS)):
+
+        # 1. Must be empty
+        if v in occupied_vertices:
+            continue
+
+        # 2. Robber Blocking?
+        if is_robber_blocking(state, v):
+            continue
+    
+        # 3. Distance rule
+        if any(n in occupied_vertices for n in VERTEX_NEIGHBORS[v]):
+            continue
+
+        # 4. Must connect to own road
+        if require_connection:
+            connects = False
+            
+            for road_idx in player.roads:
+                if v in EDGE_VERTEX_INDICES[road_idx]:
+                    connects = True
+                    break
+
+            if not connects:
+                continue
+        
+        legal.add(v)
+
+    return legal
+    
+def get_upgradeable_cities(state: GameState, player_idx: int) -> set[int]:
+    player = state.players[player_idx]
+    
+    return set(player.settlements) - set(TILE_VERTICES[state.robber_hex])
+    
+def _edge_blocked_by_opponent(state, player_idx, v1, v2):
+    for i, p in enumerate(state.players):
+        if i == player_idx:
+            continue
+        if v1 in p.settlements or v1 in p.cities:
+            return True
+        if v2 in p.settlements or v2 in p.cities:
+            return True
+    return False
+
+def is_vertex_connected_to_network(vertex: int, player) -> bool:
+    """
+    Returns True if the vertex is connected to at least one
+    of the player's roads.
+    """
+    for edge in EDGE_VERTEX_INDICES[vertex]:
+        if edge in player.roads:
+            return True
+
+    return False    
+    

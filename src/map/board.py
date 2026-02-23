@@ -10,7 +10,3 @@ class Board:
     
     hex_terrain: np.ndarray  # shape (19,), dtype=np.uint8
     hex_numbers: np.ndarray  # shape (19,), dtype=np.uint8
-
-    # def __init__(self, terrain_dist, num_dist):
-    #     self.hex_terrain = terrain_dist
-    #     self.hex_numbers = num_dist

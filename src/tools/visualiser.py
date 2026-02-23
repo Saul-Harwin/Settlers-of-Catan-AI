@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
 import map.geometry as g
 import numpy as np
+from matplotlib.patches import Patch
+
 def draw_hexes(ax, hex_terrain):
     """
     Draws the 19 Catan hexes.
@@ -81,7 +83,7 @@ def draw_roads(ax, edges):
             [y1, y2],
             linewidth=3,
             color=g.PLAYER_COLORS[owner - 1],
-            zorder=3
+            zorder=3,
         )
         
 def draw_buildings(ax, vertices):
@@ -141,7 +143,6 @@ def draw_robber(ax, robber_hex):
         zorder=2
     ))
 
-
 def draw_vertex_numbers(ax, vertex_numbers):
     """
     Draw vertex numbers for debugging.
@@ -161,7 +162,6 @@ def draw_vertex_numbers(ax, vertex_numbers):
             color="red",
             zorder=5
         )
-
 
 def draw_many_states(game_states, axes):
     """
@@ -203,14 +203,13 @@ def draw_single_state(game_state, ax):
     ax.axis("off")
     ax.set_title(f"Turn : {game_state.turn}")
     
-    
-    
+    draw_player_legend(ax, game_state)
     
 def draw(game_states):
     figsize=(12, 12)
     
     # If we are trying to render multiple states
-    if len(game_states) > 1:
+    if isinstance(game_states, list):
         cols = 3
         n = len(game_states)
         rows = math.ceil(n / cols)
@@ -226,14 +225,53 @@ def draw(game_states):
         draw_many_states(game_states, axes)
     else:
         fig, ax = plt.subplots(figsize=figsize)
-        draw_single_state(game_states[0], ax)
+        draw_single_state(game_states, ax)
 
-
+    # fig.legend
     # Make the figure fullscreen
     # mng = plt.get_current_fig_manager()
     # mng.full_screen_toggle()  # works on most backends (TkAgg, Qt5Agg)
 
     plt.autoscale()
     plt.suptitle("Settlers of Catan - Game State Visualisation")
-    plt.tight_layout()
+    # plt.tight_layout()
+    plt.legend()
     plt.show()
+    
+def draw_player_legend(ax, game_state, start_x=5.5, start_y=3.0, spacing=0.5):
+    """
+    Draw a small colored box with player labels next to the board.
+    
+    Parameters
+    ----------
+    ax : matplotlib.axes.Axes
+        The axes where the board is drawn.
+    game_state : GameState
+        Used to determine active players.
+    start_x, start_y : float
+        Coordinates for the top-left corner of the legend.
+    spacing : float
+        Vertical space between legend entries.
+    """
+    for i, player in enumerate(game_state.players):
+        color = g.PLAYER_COLORS[i]
+        y = start_y - i * spacing
+        # Draw the color box
+        ax.add_patch(
+            plt.Rectangle(
+                (start_x, y),
+                width=0.3,
+                height=0.3,
+                facecolor=color,
+                edgecolor="black",
+                zorder=10
+            )
+        )
+        # Add the label
+        ax.text(
+            start_x + 0.35, y + 0.15,
+            f"Player {i+1}",
+            va='center',
+            fontsize=10,
+            zorder=11
+        )
