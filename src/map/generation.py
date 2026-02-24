@@ -1,6 +1,6 @@
 import numpy as np
 import random
-from .board import Board
+from .board import Board, STANDARD_PORTS
 
 
 def generate_board(rng: random.Random) -> Board:
@@ -50,4 +50,5 @@ def generate_board(rng: random.Random) -> Board:
     return Board(
         hex_terrain=hex_terrain,
         hex_numbers=hex_numbers,
+        ports=STANDARD_PORTS
     )

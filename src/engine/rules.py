@@ -1,7 +1,13 @@
-from engine.state import PlayerState, GameState
-from map.geometry import EDGE_VERTEX_INDICES, VERTEX_NEIGHBORS, TILE_VERTICES
 import numpy as np
-from engine.action import GameAction, BuildRoad, BuildSettlement, BuildCity, EndTurn
+import copy
+
+from engine.state import PlayerState, GameState
+from engine.action import GameAction, BuildRoad, BuildSettlement, BuildCity, TradeWithBank, EndTurn
+
+from map.geometry import EDGE_VERTEX_INDICES, VERTEX_NEIGHBORS, TILE_VERTICES
+from map.board import Resource, get_trade_rate, Board
+
+
 
 
 def can_place_road(player: PlayerState, edge: int, state: GameState) -> bool:    
@@ -147,10 +153,55 @@ def legal_actions(state: GameState, player_idx: int) -> list[GameAction]:
         for vertex in get_upgradeable_cities(state, player_idx):
             actions.append(BuildCity(vertex))
         
+    # Trades 
+    
+    for trade in legal_bank_trades(state, player):
+        actions.append(TradeWithBank(trade.give_resource, trade.give_amount, trade.receive_resource, trade.receive_amount))
+        
+    # EndTurn
     actions.append(EndTurn())
 
     return actions       
-        
+     
+def legal_bank_trades(state: GameState, player: PlayerState):
+    trades = []
+
+    for give_res in Resource:
+        rate = get_trade_rate(state.board, player, give_res)
+
+        if player.resources[give_res] >= rate:
+            for receive_res in Resource:
+                if receive_res == give_res:
+                    continue
+
+                trades.append(
+                    TradeWithBank(
+                        give_resource=give_res,
+                        give_amount=rate,
+                        receive_resource=receive_res,
+                        receive_amount=1
+                    )
+                )
+
+    return trades
+
+def is_valid_bank_trade(board: Board, player, action: TradeWithBank) -> bool:
+    rate = get_trade_rate(board, player, action.give_resource)
+
+    if action.give_amount != rate:
+        return False
+
+    if action.receive_amount != 1:
+        return False
+
+    if player.resources[action.give_resource] < rate:
+        return False
+
+    if action.give_resource == action.receive_resource:
+        return False
+
+    return True
+
 def get_legal_edges(state: GameState, player_idx: int) -> set[int]:
     player = state.players[player_idx]
 

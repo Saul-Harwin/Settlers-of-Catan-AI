@@ -3,11 +3,10 @@ import copy
 import numpy as np
 import random
 from dataclasses import dataclass
-from enum import IntEnum
 
 from engine.state import GameState
-from engine.action import GameAction, BuildRoad, BuildSettlement, BuildCity, EndTurn
-from engine.rules import get_legal_edges, get_legal_settlement_vertices, get_upgradeable_cities, legal_actions
+from engine.action import GameAction, BuildRoad, BuildSettlement, BuildCity, TradeWithBank, EndTurn
+from engine.rules import get_legal_edges, get_legal_settlement_vertices, get_upgradeable_cities, legal_actions, is_valid_bank_trade
 
 from logic.strategies import RandomStrategy, HeuristicStrategy
 
@@ -20,27 +19,19 @@ from map.geometry import EDGE_VERTEX_INDICES, TILE_VERTICES, VERTEX_NEIGHBORS, P
 class EvalWeights:
     # VP should dominate evaluation to prevent greedy resource hoarding.
     vp_weight         = 15.0
-    
-    # Cities drive compounding return.
-    city_weight       = 8.0
-    
-    # Still valuable, but inferior to upgrading strong spots.
-    settlement_weight = 6.0
-    
-    # Small positive pressure toward liquidity.
-    resource_weight   = 1.0
+    build_potential   = 4.0
+    resource          = 3.0
+    expansion_potential = 3.0
+    diversity  = 6.0
     
     # Roads are options, not assets. Overweighting them causes wandering.
-    road_weight       = 2.0
+    road       = 1.0
+    settlement = 3.0
+    city       = 8.0
     
-    diversity_weight  = 6.0
     
-class Resource(IntEnum):
-    WOOD  = 0
-    BRICKS  = 1
-    SHEEP = 2
-    WHEAT = 3
-    ROCK  = 4
+    
+    
 
 def seed_starting_positions(state, player_idx, strategy, rng):
     """
@@ -123,18 +114,18 @@ def seed_starting_positions(state, player_idx, strategy, rng):
 
 def simulate_game(game_state: GameState, n_turns: int = 10, visualise: bool = True, rng: random.Random = random) -> GameState:
     game_states = []
-    strategies = [HeuristicStrategy(), RandomStrategy(), RandomStrategy(), RandomStrategy()]
+    strategies = [HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy()]
     
     
     for i in range(len(game_state.players)):
         seed_starting_positions(game_state, i, strategies[i], rng)
-        draw(game_state)
+        # draw(game_state)
 
 
     for i in range(len(game_state.players)):
         idx = len(game_state.players) - 1 - i
         seed_starting_positions(game_state, idx, strategies[idx], rng)
-        draw(game_state)
+        # draw(game_state)
     
     
     starting_resources(game_state)
@@ -142,7 +133,6 @@ def simulate_game(game_state: GameState, n_turns: int = 10, visualise: bool = Tr
     game_states.append(game_state.copy())
     
     for turn in range(n_turns):
-        print(turn)
         print(game_state)
         roll_val = roll(rng)
         
@@ -207,11 +197,17 @@ def step(state: GameState, strategies, rng):
     strategy = strategies[player_idx]    # for testing, use same policy for all players
     chosen = strategy.select_action(state, rng)
 
+    # Both These lines purely for printing
     actions = legal_actions(state, player_idx)
-    print(f"Player {player_idx + 1} chooses action: {chosen} out of {actions}")
-
-    production = compute_production_profile(state, state.players[player_idx])
-    prod_values = np.array(production)
+    scores  = []
+    
+    for action in actions:
+        hypothetical_state = apply_action(state, player_idx, action)
+        scores.append(evaluate_state(hypothetical_state, player_idx, EvalWeights))
+    
+    actions_str = f"\n  - ".join(f"{a}:       score={scores[i]}" for i, a in enumerate(actions))
+    print(f"Player {player_idx + 1} chooses action: {chosen} out of:\n  - {actions_str}")
+    print("\n")
     
     state = execute_action(state, player_idx, chosen)
 
@@ -283,32 +279,67 @@ def move_robber(state: GameState, new_hex: int) -> None:
     state.robber_hex = new_hex
 
 def evaluate_state(state, player_idx: int, w: EvalWeights) -> float:
+    ROAD_COST = np.array([1, 1, 0, 0, 0], dtype=np.uint8)
+    SETTLEMENT_COST = np.array([1, 1, 1, 1, 0], dtype=np.uint8)
+    CITY_COST = np.array([0, 0, 0, 2, 3], dtype=np.uint8)
+    
     player = state.players[player_idx]
-    score = 0.0
-
-    # Victory points
-    score += w.vp_weight * player.victory_points
-
-    # Structures
-    score += w.settlement_weight * len(player.settlements)
-    score += w.city_weight * len(player.cities)
-    score += w.road_weight * len(player.roads)
-
-    # Resources --------------------------------------
-    # score += w.resource_weight * sum(player.resources)
     
     
-    # 1. Resource Production Potential
+    # ----------------------------------------------------
+    # ------------------ Victory Points ------------------
+    # ----------------------------------------------------
+    
+    victory_points_score = w.vp_weight * player.victory_points
+    
+
+    
+    # ----------------------------------------------------
+    # ----------------- Build Potential  -----------------
+    # ----------------------------------------------------
+    
+    build_potential_score = 0.0
+    
+    build_potential_score += w.road       * build_progress(player.resources, ROAD_COST)
+    build_potential_score += w.settlement * build_progress(player.resources, SETTLEMENT_COST)
+    build_potential_score += w.city       * build_progress(player.resources, CITY_COST)
+    
+    build_potential_score *= w.build_potential    
+    
+    
+    
+    # ----------------------------------------------------
+    # --------------- Resource Production  ---------------
+    # ----------------------------------------------------
+    
+    resource_production_score = 0.0
+    
     for vertex in player.settlements | player.cities:
         for hex_idx in adjacent_hexes(vertex):
             if hex_idx == state.robber_hex:
                 continue
             number = state.board.hex_numbers[hex_idx]
             # Each hex contributes PIP_WEIGHT[number] to expected production
-            score += w.resource_weight * PIP_WEIGHT.get(number, 0)
-
-
-    # 2. Resource Diversity
+            resource_production_score += w.resource * PIP_WEIGHT.get(number, 0)
+    
+    
+    
+    # ----------------------------------------------------
+    # -------------- Expansion Potential  ----------------
+    # ----------------------------------------------------        
+    
+    num_roads = len(get_legal_edges(state, player_idx))
+    num_settlements = len(get_legal_settlement_vertices(state, player_idx, require_connection=True))
+    
+    # Optional: scale settlements higher than roads since they provide VP and production
+    expansion_potential_score = w.road * num_roads + w.settlement * num_settlements
+    expansion_potential_score *= w.expansion_potential 
+    
+    
+    # ----------------------------------------------------
+    # --------------- Resource Diversity  ----------------
+    # ----------------------------------------------------
+    
     production = np.array(compute_production_profile(state, player), dtype=float)
     total = production.sum()
 
@@ -318,38 +349,51 @@ def evaluate_state(state, player_idx: int, w: EvalWeights) -> float:
         entropy /= np.log(len(production))
     else:
         entropy = 0.0
-
-
-    score += w.diversity_weight * entropy
     
+    resource_diversity_score = w.diversity * entropy
+    
+    
+    
+    # ----------------------------------------------------
+    # --------------- Combine Everything  ----------------
+    # ----------------------------------------------------
+    
+    # print(victory_points_score, build_potential_score, resource_production_score, expansion_potential_score, resource_diversity_score)
+    
+    score = victory_points_score + build_potential_score + resource_production_score + expansion_potential_score + resource_diversity_score
+
     # Phase adjustment
-    score *= 1.0 + 0.01 * state.turn
+    # score *= 1.0 + 0.01 * state.turn
 
     return score
 
 def apply_action(state: GameState, player_idx: int, action: GameAction) -> GameAction:
-        # Local import avoids circular dependency
-        from engine.state import GameState  
-        
-        new_state = copy.deepcopy(state)
-        # player = new_state.players[player_idx]
-        
-        if isinstance(action, BuildRoad):
-            build_road(new_state, player_idx, action.edge)
+    
+    # Local import avoids circular dependency
+    from engine.state import GameState  
+    
+    new_state = copy.deepcopy(state)
+    # player = new_state.players[player_idx]
+    
+    if isinstance(action, BuildRoad):
+        build_road(new_state, player_idx, action.edge)
 
-        elif isinstance(action, BuildSettlement):
-            build_settlement(new_state, player_idx, action.vertex)
+    elif isinstance(action, BuildSettlement):
+        build_settlement(new_state, player_idx, action.vertex)
 
-        elif isinstance(action, BuildCity):
-            build_city(new_state, player_idx, action.vertex)
+    elif isinstance(action, BuildCity):
+        build_city(new_state, player_idx, action.vertex)
 
-        elif isinstance(action, EndTurn):
-            new_state.turn += 1
+    elif isinstance(action, TradeWithBank):
+        trade_with_bank(new_state, player_idx, action)
 
-        else:
-            raise ValueError("Unknown action type")
-        
-        return new_state
+    elif isinstance(action, EndTurn):
+        new_state.turn += 1
+
+    else:
+        raise ValueError("Unknown action type")
+    
+    return new_state
 
 def execute_action(state, player_idx, action):
     if isinstance(action, BuildRoad):
@@ -360,6 +404,9 @@ def execute_action(state, player_idx, action):
 
     elif isinstance(action, BuildCity):
         build_city(state, player_idx, action.vertex)
+        
+    elif isinstance(action, TradeWithBank):
+        trade_with_bank(state, player_idx, action)
 
     elif isinstance(action, EndTurn):
         state.turn += 1
@@ -417,4 +464,25 @@ def compute_production_profile(state, player):
 
     return production
 
+def trade_with_bank(state: GameState, player_idx: int, action: TradeWithBank) -> None:
+    player = state.players[player_idx]
 
+    if not is_valid_bank_trade(state.board, player, action):
+        raise ValueError("Invalid bank trade")
+
+    player.resources[action.give_resource] -= action.give_amount
+    player.resources[action.receive_resource] += action.receive_amount
+
+def build_progress(player_resources: np.ndarray, cost: np.ndarray) -> float:
+    # Convert to signed int to prevent underflow
+    resources = np.array(player_resources, dtype=int)
+    cost = np.array(cost, dtype=int)
+
+    missing = np.maximum(cost - resources, 0)
+    total_needed = cost.sum()
+
+    if total_needed == 0:
+        return 0.0
+
+    progress = 1.0 - missing.sum() / total_needed
+    return progress
