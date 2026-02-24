@@ -18,11 +18,22 @@ from map.geometry import EDGE_VERTEX_INDICES, TILE_VERTICES, VERTEX_NEIGHBORS, P
 
 @dataclass
 class EvalWeights:
-    vp_weight: float = 10.0
-    settlement_weight: float = 2.0
-    city_weight: float = 3.0
-    road_weight: float = 1.0
-    resource_weight: float = 0.5
+    # VP should dominate evaluation to prevent greedy resource hoarding.
+    vp_weight         = 15.0
+    
+    # Cities drive compounding return.
+    city_weight       = 8.0
+    
+    # Still valuable, but inferior to upgrading strong spots.
+    settlement_weight = 6.0
+    
+    # Small positive pressure toward liquidity.
+    resource_weight   = 1.0
+    
+    # Roads are options, not assets. Overweighting them causes wandering.
+    road_weight       = 2.0
+    
+    diversity_weight  = 6.0
     
 class Resource(IntEnum):
     WOOD  = 0
@@ -112,18 +123,19 @@ def seed_starting_positions(state, player_idx, strategy, rng):
 
 def simulate_game(game_state: GameState, n_turns: int = 10, visualise: bool = True, rng: random.Random = random) -> GameState:
     game_states = []
-    strategies = [RandomStrategy(), RandomStrategy(), RandomStrategy(), HeuristicStrategy()]
+    strategies = [HeuristicStrategy(), RandomStrategy(), RandomStrategy(), RandomStrategy()]
     
     
     for i in range(len(game_state.players)):
         seed_starting_positions(game_state, i, strategies[i], rng)
+        draw(game_state)
 
-    draw(game_state)
 
     for i in range(len(game_state.players)):
-        seed_starting_positions(game_state, i, strategies[i], rng)
+        idx = len(game_state.players) - 1 - i
+        seed_starting_positions(game_state, idx, strategies[idx], rng)
+        draw(game_state)
     
-    draw(game_state)
     
     starting_resources(game_state)
     
@@ -297,16 +309,19 @@ def evaluate_state(state, player_idx: int, w: EvalWeights) -> float:
 
 
     # 2. Resource Diversity
-    production = compute_production_profile(state, player)
-    prod_values = np.array(production)
+    production = np.array(compute_production_profile(state, player), dtype=float)
+    total = production.sum()
 
-    # print(prod_values)
+    if total > 0:
+        p = production / total
+        entropy = -np.sum(p * np.log(p + 1e-12))  # numerical stability
+        entropy /= np.log(len(production))
+    else:
+        entropy = 0.0
 
-    # Count resources with meaningful production
-    diversity = np.count_nonzero(prod_values > 0)
 
-    score += w.resource_weight * diversity
-
+    score += w.diversity_weight * entropy
+    
     # Phase adjustment
     score *= 1.0 + 0.01 * state.turn
 
