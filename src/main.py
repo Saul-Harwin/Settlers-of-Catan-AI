@@ -27,6 +27,7 @@ def main(
     turn = 0
 
     game_state = GameState(board, players, robber_hex, turn, rng)
+    game_state.state_to_tensor()
 
     # simulate the game
     game_history = simulate_game(game_state, n_turns=n_turns, visualise=visualise, rng=rng)

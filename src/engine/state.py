@@ -121,6 +121,122 @@ class GameState:
         """
         return self.turn % len(self.players)
     
+    def terrain_tensor(self):
+        """
+        | 0 |      -  These first 6 numbers are for the terrain types 
+        | 0 |      -  These first 6 numbers are for the terrain types
+        | 0 |      -  These first 6 numbers are for the terrain types
+        | 0 |      -  These first 6 numbers are for the terrain types
+        | 0 |      -  These first 6 numbers are for the terrain types
+        | 0 |      -  These first 6 numbers are for the terrain types
+        | 0 |      -  These second 10 are for the number
+        | 0 |      -  These second 10 are for the number
+        | 0 |      -  These second 10 are for the number
+        | 0 |      -  These second 10 are for the number
+        | 0 |      -  These second 10 are for the number
+        | 0 |      -  These second 10 are for the number
+        | 0 |      -  These second 10 are for the number
+        | 0 |      -  These second 10 are for the number
+        | 0 |      -  These second 10 are for the number
+        | 0 |      -  These second 10 are for the number
+        | 0 |      -  These second 10 are for the number
+        | 0 |      -  Robber       
+        """
+        
+        
+        num_hexes = len(self.board.hex_terrain)
+        num_terrain_types = 6                       # 0: dessert, 1: wood, 2: bricks, 3: sheep, 4: wheat, 5: ore
+        num_numbers = 10                           # 2, 3, 4, 5, 6, 8, 9, 10, 11, 12  
+        number_to_idx = {2:0, 3:1, 4:2, 5:3, 6:4, 8:5, 9:6, 10:7, 11:8, 12:9}
+        
+        tensor = np.zeros((num_hexes, num_terrain_types + num_numbers + 1), dtype=np.float32)
+
+        for i in range(len(self.board.hex_terrain)):
+            number = self.board.hex_numbers[i]
+            t_type = self.board.hex_terrain[i]
+            
+            # Terrain Type
+            tensor[i, t_type] = 1.0
+            
+            # Number 
+            if number != 0:
+                tensor[i, num_terrain_types + number_to_idx[number]] = 1.0
+            
+        # Robber
+        tensor[self.robber_hex, -1] = 1.0
+                
+        return tensor
+            
+    def edge_tensor(self):
+        num_edges = 72
+        num_players = len(self.players)
+        edge_tensor = np.zeros((num_edges, num_players + 1), dtype=np.float32)
+
+        for p_idx, player in enumerate(self.players):
+            for edge_idx in player.roads:
+                edge_tensor[edge_idx, p_idx] = 1.0
+
+        # Free edge channel
+        occupied_edges = set().union(*[player.roads for player in self.players])
+        for edge_idx in range(num_edges):
+            if edge_idx not in occupied_edges:
+                edge_tensor[edge_idx, -1] = 1.0
+                
+        return edge_tensor
+    
+    def vertex_tensor(self):
+        num_vertices = 54
+        num_players = len(self.players)
+        
+        vertex_tensor = np.zeros((num_vertices, num_players + 2), dtype=np.float32)
+        
+        for p_idx, player in enumerate(self.players):
+            # Settlements
+            for v in player.settlements:
+                vertex_tensor[v, p_idx] = 1.0  # mark player ownership
+                vertex_tensor[v, -2] = 1.0     # settlement flag
+                
+            # Cities
+            for v in player.cities:
+                vertex_tensor[v, p_idx] = 1.0  # mark player ownership
+                vertex_tensor[v, -1] = 1.0     # city flag
+        
+        return vertex_tensor
+        
+    def resources_tensor(self):
+        num_players = len(self.players)
+        num_resources = 5  # wood, brick, wheat, sheep, ore
+        
+        resources_tensor = np.zeros((num_players, num_resources), dtype=np.float32)
+            
+        for player_idx, player in enumerate(self.players):
+            resources_tensor[player_idx] = np.array([
+                player.resources[0],  # wood
+                player.resources[1],  # brick
+                player.resources[2],  # wheat
+                player.resources[3],  # sheep
+                player.resources[4]   # ore
+            ], dtype=np.float32)
+    
+        return resources_tensor
+            
+    def state_to_tensor(self):
+        # print(self.resources_tensor())
+        # print(self.terrain_tensor())
+        # print(self.edge_tensor())
+        # print(self.vertex_tensor())
+        
+        input_vector = np.concatenate([
+            self.terrain_tensor().flatten(),
+            self.vertex_tensor().flatten(),
+            self.edge_tensor().flatten(),
+            self.resources_tensor().flatten()
+        ])
+        
+        print(input_vector)
+        return input_vector
+        
+        
     def __str__(self) -> str:
         start = f"\n-------------------------------------------------------------------------------------------------------------\n                                              Game State: turn={self.turn} \n-------------------------------------------------------------------------------------------------------------\n"
         
