@@ -133,30 +133,38 @@ def is_robber_blocking(state: GameState, target: int) -> bool:
         else:
             return False
     
-def legal_actions(state: GameState, player_idx: int) -> list[GameAction]:
+def generate_legal_actions(state: GameState) -> list[GameAction]:
     # [wood, brick, sheep, wheat, rock]
+    player_idx = state.get_current_player_idx()
     player = state.players[player_idx]
     actions = []
     
     # Roads
-    if player.resources[0] > 0 and player.resources[1] > 0:
+    if player.resources[0] >= 1 and player.resources[1] >= 1:
         for edge in get_legal_edges(state, player_idx):
             actions.append(BuildRoad(edge))
         
     # Settlements
-    if player.resources[0] > 0 and player.resources[1] > 0 and player.resources[2] > 0 and player.resources[3] > 0:
+    if player.resources[0] >= 1 and player.resources[1] >= 1 and player.resources[2] >= 1 and player.resources[3] >= 1:
         for vertex in get_legal_settlement_vertices(state, player_idx, require_connection=True):
             actions.append(BuildSettlement(vertex))
 
     # Cities
-    if player.resources[3] > 1 and player.resources[4] > 2:
+    if player.resources[3] >= 2 and player.resources[4] >= 3:
         for vertex in get_upgradeable_cities(state, player_idx):
             actions.append(BuildCity(vertex))
         
     # Trades 
-    
     for trade in legal_bank_trades(state, player):
-        actions.append(TradeWithBank(trade.give_resource, trade.give_amount, trade.receive_resource, trade.receive_amount))
+        actions.append(
+            TradeWithBank(
+                trade.give_resource, 
+                trade.give_amount, 
+                trade.receive_resource, 
+                trade.receive_amount
+            )
+        )
+
         
     # EndTurn
     actions.append(EndTurn())

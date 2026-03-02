@@ -3,7 +3,7 @@ import random
 from dataclasses import dataclass
 
 # from engine.state import GameState, PlayerState
-from engine.rules import can_place_settlement, can_place_road, legal_actions, is_vertex_connected_to_network
+from engine.rules import can_place_settlement, can_place_road, generate_legal_actions, is_vertex_connected_to_network
 from engine.action import BuildSettlement, BuildRoad, BuildCity, EndTurn
 
 from map.board import Board
@@ -19,7 +19,7 @@ from logic.helpers import get_free_vertices
 class RandomStrategy:
     def select_action(self, state, rng):
         player_idx = state.get_current_player_idx()
-        actions = legal_actions(state, player_idx)
+        actions = generate_legal_actions(state, player_idx)
         return rng.choice(actions)
 
 
@@ -45,7 +45,7 @@ class HeuristicStrategy:
 
         player_idx = state.get_current_player_idx()
         
-        for action in legal_actions(state, player_idx):
+        for action in generate_legal_actions(state, player_idx):
             # apply_action already returns a copy, so no need for state.copy()
             hypothetical_state = apply_action(state, player_idx, action)
             score = evaluate_state(hypothetical_state, player_idx, weights)

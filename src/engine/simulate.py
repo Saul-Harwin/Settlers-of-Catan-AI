@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 from engine.state import GameState
 from engine.action import GameAction, BuildRoad, BuildSettlement, BuildCity, TradeWithBank, EndTurn
-from engine.rules import get_legal_edges, get_legal_settlement_vertices, get_upgradeable_cities, legal_actions, is_valid_bank_trade
+from engine.rules import get_legal_edges, get_legal_settlement_vertices, get_upgradeable_cities, generate_legal_actions, is_valid_bank_trade
 
 from logic.strategies import RandomStrategy, HeuristicStrategy
 
@@ -198,7 +198,7 @@ def step(state: GameState, strategies, rng):
     chosen = strategy.select_action(state, rng)
 
     # Both These lines purely for printing
-    actions = legal_actions(state, player_idx)
+    actions = generate_legal_actions(state, player_idx)
     scores  = []
     
     for action in actions:
