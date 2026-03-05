@@ -18,11 +18,11 @@ def evaluate(model, env):
     # simulate a game
     game_state = initialise_game(random.randint(0, 1000))
     strategies = [HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy()]
-    game_history = simulate_game(strategies=strategies, game_state=game_state, n_turns=100, visualise=False, rng=game_state.rng, log=False)        
+    game_history = simulate_game(strategies=strategies, env=env, game_state=game_state, n_turns=100, visualise=False, rng=game_state.rng, log=False)        
 
     check_amount = len(game_history)
     print(f"""
-    For evaluate the model simply I have implemented this which looks at {check_amount} state from a simulated game \n and print out the entropy and the probs tensor.   
+    For evaluate the model simply I have implemented this which looks at {check_amount} state from a previously simulated game \n using 4 heuristic agents. Then I can see what my ppo_agent would do given a state printing out the resulting entropy and the probs tensor.    
         """)
 
     for i in range(0, len(game_history), len(game_history) // check_amount):

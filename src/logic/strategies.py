@@ -54,7 +54,7 @@ class HeuristicStrategy:
                 best_score = score
                 best_action = action
 
-        return best_action
+        return best_action, None, None
 
     def score(self, state, action) -> float:
         if isinstance(action, BuildSettlement):

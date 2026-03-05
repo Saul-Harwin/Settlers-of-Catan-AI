@@ -3,12 +3,14 @@ import copy
 import numpy as np
 import random
 from dataclasses import dataclass
+import torch
 
 from engine.state import GameState
 from engine.action import GameAction, BuildRoad, BuildSettlement, BuildCity, TradeWithBank, EndTurn
 from engine.rules import get_legal_edges, get_legal_settlement_vertices, get_upgradeable_cities, generate_legal_actions, is_valid_bank_trade
 
 from logic.strategies import RandomStrategy, HeuristicStrategy
+from learning.agent import PPOAgent
 
 from tools.visualiser import draw, draw_many_states
 
@@ -112,22 +114,21 @@ def seed_starting_positions(state, player_idx, strategy, rng):
     player.victory_points += 1
     player.roads.add(best_edge)
 
-def simulate_game(strategies, game_state: GameState, n_turns: int = 10, visualise: bool = True, rng: random.Random = random, log: bool = True) -> GameState:
+def simulate_game(strategies, env, game_state: GameState, n_turns: int = 10, visualise: bool = True, rng: random.Random = random, log: bool = True) -> GameState:
     print("Simulating Catan Game")
     game_states = []
     # strategies = [HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy()]
     
     
     for i in range(len(game_state.players)):
-        seed_starting_positions(game_state, i, strategies[i], rng)
+        seed_starting_positions(game_state, i, [HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy()][i], rng)
         # draw(game_state)
 
 
     for i in range(len(game_state.players)):
         idx = len(game_state.players) - 1 - i
-        seed_starting_positions(game_state, idx, strategies[idx], rng)
+        seed_starting_positions(game_state, idx, [HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy()][idx], rng)
         # draw(game_state)
-    
     
     starting_resources(game_state)
     
@@ -146,12 +147,12 @@ def simulate_game(strategies, game_state: GameState, n_turns: int = 10, visualis
             move_robber(game_state, new_hex=game_state.rng.randint(0, 18))      # Need to implement stealing logic first, otherwise just leave robber in place
         
         if log:
-            print(f"Turn {game_state.turn}: Player {game_state.turn % len(game_state.players) + 1} rolled a {roll_val}")
+            print(f"Turn {game_state.turn}: Player {game_state.turn % len(game_state.players) + 1} rolled a {roll_val}\n")
         
-        resource_production(game_state, roll_val)
+        resource_production(game_state, roll_val, log)
 
         while game_state.turn == turn:
-            step(game_state, strategies, rng, log)
+            step(game_state, strategies, rng, env, log)
             game_states.append(game_state.copy())
         
         if any(p.victory_points >= 10 for p in game_state.players):
@@ -179,7 +180,7 @@ def starting_resources(state: GameState):
 def roll(rng) -> int:
     return rng.randint(1, 6) + rng.randint(1, 6)
 
-def resource_production(state: GameState, roll: int) -> None:
+def resource_production(state: GameState, roll: int, log=False) -> None:
     hexes = np.where(state.board.hex_numbers == roll)[0]
     
     for hex_idx in hexes:
@@ -189,32 +190,123 @@ def resource_production(state: GameState, roll: int) -> None:
             for v in player.settlements:
                 if v in vertices:
                     # [wood, brick, sheep, wheat, rock]
-                    # print(f"roll: {roll} -> Player {i+1} gets resource from hex {hex_idx} ({state.board.hex_terrain[hex_idx]-1}) for settlement at vertex {v}")
+                    if log:
+                        print(f"roll: {roll} -> Player {i+1} gets resource ({state.board.hex_terrain[hex_idx]-1}) from hex {hex_idx} for settlement at vertex {v}")
                     player.resources[state.board.hex_terrain[hex_idx]-1] += 1
             for v in player.cities:
                 if v in vertices:
                     player.resources[state.board.hex_terrain[hex_idx]-1] += 2
                     
-def step(state: GameState, strategies, rng, log: bool):
+def step(state: GameState, strategies, rng, env, log: bool):
     player_idx = state.get_current_player_idx()
 
     # policy = policies[player_idx]
     strategy = strategies[player_idx]    # for testing, use same policy for all players
-    chosen = strategy.select_action(state, rng)
+    
+    if isinstance(strategy, PPOAgent):
+        state_tensor = torch.tensor(state.state_to_tensor())
+        mask = env.legal_action_mask(state)
 
-    # Both These lines purely for printing
-    actions = generate_legal_actions(state)
-    scores  = []
-    
-    for action in actions:
-        hypothetical_state = apply_action(state, player_idx, action)
-        scores.append(evaluate_state(hypothetical_state, player_idx, EvalWeights))
-    
-    if log:
-        actions_str = f"\n  - ".join(f"{a}:       score={scores[i]}" for i, a in enumerate(actions))
-        print(f"Player {player_idx + 1} chooses action: {chosen} out of:\n  - {actions_str}")
-        print("\n")
-    
+        chosen, log_prob, value = strategy.select_action(
+            state_tensor,
+            mask
+        )
+        chosen = env.decode_action(chosen)
+        
+        # --- Handle Bank Trades ---
+        if isinstance(chosen, TradeWithBank):
+            # Find the legal TradeWithBank object that matches give/receive
+            matched = False
+            for action in generate_legal_actions(state):
+                if (isinstance(action, TradeWithBank) and
+                    action.give_resource == chosen.give_resource and
+                    action.receive_resource == chosen.receive_resource):
+                    chosen = action  # now decoded has correct give_amount
+                    matched = True
+                    break
+            if not matched:
+                raise ValueError("Selected trade action is not legal!")
+        
+        if log:
+            RESOURCE_NAMES = ["Wood", "Brick", "Sheep", "Wheat", "Ore"]
+            with torch.no_grad():
+                state_tensor = torch.tensor(state.state_to_tensor(), dtype=torch.float32)
+
+                logits, value_est = strategy.model(state_tensor)
+
+                mask_t = torch.tensor(mask, dtype=torch.bool)
+
+                masked_logits = logits.masked_fill(~mask_t, -1e9)
+                probs = torch.softmax(masked_logits, dim=-1)
+
+                entropy = -(probs[mask_t] * torch.log(probs[mask_t] + 1e-12)).sum().item()
+
+                print(f"\nPlayer {player_idx + 1} chooses action: {chosen} out of:")
+                
+                legal_indices = mask_t.nonzero(as_tuple=False).squeeze(-1)
+                for idx in legal_indices:
+                    decoded = env.decode_action(idx)                       
+                        
+                    idx = idx.item()
+                    p = probs[idx].item()
+
+                    if isinstance(decoded, BuildRoad):
+                        action_type = "BuildRoad"
+                        info = f"edge={idx}"
+
+                    elif isinstance(decoded, BuildSettlement):
+                        action_type = "BuildSettlement"
+                        info = f"vertex={idx - 72}"
+
+                    elif isinstance(decoded, BuildCity):
+                        action_type = "BuildCity"
+                        info = f"vertex={idx - 126}"
+
+                    elif isinstance(decoded, EndTurn):
+                        action_type = "EndTurn"
+                        info = ""
+
+                    elif isinstance(decoded, TradeWithBank):
+                        action_type = "TradeWithBank"
+
+                        give           = int(decoded.give_resource)
+                        give_amount    = decoded.give_amount
+                        receive        = int(decoded.receive_resource)
+                        receive_amount = decoded.receive_amount
+
+                        info = (
+                            f"{f' give={RESOURCE_NAMES[give]}, ':13}"
+                            f"{f' give_amount={give_amount}, ':19}"
+                            f"{f' receive={RESOURCE_NAMES[receive]}, ':16}"
+                            f"{f' receive_amount={receive_amount}':17}"
+                        )
+
+                    else:
+                        action_type="Invalid Action"
+                        info=""
+                    
+                    print(
+                        f"  {action_type:14} | {info:66} |  prob={p:.6f}"
+                    )
+                    
+                print("\n")
+                
+    else:
+        chosen, log_prob, value = strategy.select_action(state, rng)
+        
+        if log:
+            # Both These lines purely for printing
+            actions = generate_legal_actions(state)
+            scores  = []
+            
+            for action in actions:
+                hypothetical_state = apply_action(state, player_idx, action)
+                scores.append(evaluate_state(hypothetical_state, player_idx, EvalWeights))
+            actions_str = f"\n  - ".join(f"{f'{a}  ':122}|  score={scores[i]}" for i, a in enumerate(actions))
+            print(f"\nPlayer {player_idx + 1} chooses action: {chosen} out of:\n  - {actions_str}")
+            print("\n")
+        
+            
     state = execute_action(state, player_idx, chosen)
 
 def build_road(state: GameState, player_idx: int, edge: int):
