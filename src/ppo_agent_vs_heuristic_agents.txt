@@ -42,7 +42,109 @@ Turn 0: Player 1 rolled a 7
 
 
 Player 1 chooses action: EndTurn() out of:
-  EndTurn        |                                                                    |  prob=1.000000
+  EndTurn        |                                                                  |  prob=1.000000
+
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Turn 1: Player 2 rolled a 9
+
+roll: 9 -> Player 2 gets resource (4) from hex 6 for settlement at vertex 25
+roll: 9 -> Player 1 gets resource (3) from hex 11 for settlement at vertex 35
+roll: 9 -> Player 2 gets resource (3) from hex 11 for settlement at vertex 25
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                    Game State: turn=1 
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+  Robber is on hex 14
+  Board State:
+    Board hex numbers ('board.hex_numbers'): [4, 11, 3, 5, 10, 0, 9, 4, 12, 11, 8, 9, 2, 5, 3, 8, 6, 6, 10]
+    Board hex terrain ('board.hex_terrain'): [3, 2, 5, 5, 3, 0, 5, 1, 4, 2, 3, 4, 4, 3, 2, 1, 2, 1, 1]
+
+  Player 1:
+    Resources ('playerState.resources'): [1, 0, 1, 2, 0]
+    Settlements ('playerState.settlements'): [31, 35]
+    Cities ('playerState.cities'): []
+    Roads ('playerState.roads'): [35, 47]
+    Victory points ('playerState.victory_points'): 2
+  Player 2:
+    Resources ('playerState.resources'): [1, 1, 1, 1, 1]
+    Settlements ('playerState.settlements'): [25, 41]
+    Cities ('playerState.cities'): []
+    Roads ('playerState.roads'): [31, 56]
+    Victory points ('playerState.victory_points'): 2
+  Player 3:
+    Resources ('playerState.resources'): [0, 0, 2, 0, 1]
+    Settlements ('playerState.settlements'): [9, 18]
+    Cities ('playerState.cities'): []
+    Roads ('playerState.roads'): [11, 24]
+    Victory points ('playerState.victory_points'): 2
+  Player 4:
+    Resources ('playerState.resources'): [0, 2, 1, 0, 0]
+    Settlements ('playerState.settlements'): [33, 43]
+    Cities ('playerState.cities'): []
+    Roads ('playerState.roads'): [44, 64]
+    Victory points ('playerState.victory_points'): 2
+
+
+Player 2 chooses action: BuildRoad(edge=55) out of:
+  - BuildRoad(edge=32)                                                                                                        |  score=141.77718940091665
+  - BuildRoad(edge=50)                                                                                                        |  score=141.77718940091665
+  - BuildRoad(edge=22)                                                                                                        |  score=141.77718940091665
+  - BuildRoad(edge=55)                                                                                                        |  score=153.77718940091665
+  - BuildRoad(edge=57)                                                                                                        |  score=138.77718940091665
+  - BuildRoad(edge=30)                                                                                                        |  score=153.77718940091665
+  - BuildRoad(edge=63)                                                                                                        |  score=144.77718940091665
+  - EndTurn()                                                                                                                 |  score=151.77718940091665
+
+
+Simulating Catan Game
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Robber activated! Moving robber to random hex. (No stealing implemented yet)
+Turn 0: Player 1 rolled a 7
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                    Game State: turn=0 
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+  Robber is on hex 14
+  Board State:
+    Board hex numbers ('board.hex_numbers'): [4, 11, 3, 5, 10, 0, 9, 4, 12, 11, 8, 9, 2, 5, 3, 8, 6, 6, 10]
+    Board hex terrain ('board.hex_terrain'): [3, 2, 5, 5, 3, 0, 5, 1, 4, 2, 3, 4, 4, 3, 2, 1, 2, 1, 1]
+
+  Player 1:
+    Resources ('playerState.resources'): [1, 0, 1, 1, 0]
+    Settlements ('playerState.settlements'): [31, 35]
+    Cities ('playerState.cities'): []
+    Roads ('playerState.roads'): [35, 47]
+    Victory points ('playerState.victory_points'): 2
+  Player 2:
+    Resources ('playerState.resources'): [1, 1, 1, 0, 0]
+    Settlements ('playerState.settlements'): [25, 41]
+    Cities ('playerState.cities'): []
+    Roads ('playerState.roads'): [31, 56]
+    Victory points ('playerState.victory_points'): 2
+  Player 3:
+    Resources ('playerState.resources'): [0, 0, 2, 0, 1]
+    Settlements ('playerState.settlements'): [9, 18]
+    Cities ('playerState.cities'): []
+    Roads ('playerState.roads'): [11, 24]
+    Victory points ('playerState.victory_points'): 2
+  Player 4:
+    Resources ('playerState.resources'): [0, 2, 1, 0, 0]
+    Settlements ('playerState.settlements'): [33, 43]
+    Cities ('playerState.cities'): []
+    Roads ('playerState.roads'): [44, 64]
+    Victory points ('playerState.victory_points'): 2
+
+
+Player 1 chooses action: EndTurn() out of:
+  EndTurn        |                                                                  |  prob=1.000000
 
 
 
@@ -247,7 +349,7 @@ roll: 6 -> Player 4 gets resource (0) from hex 17 for settlement at vertex 43
 
 
 Player 1 chooses action: EndTurn() out of:
-  EndTurn        |                                                                    |  prob=1.000000
+  EndTurn        |                                                                  |  prob=1.000000
 
 
 
@@ -461,11 +563,11 @@ roll: 12 -> Player 3 gets resource (3) from hex 8 for settlement at vertex 18
 
 
 Player 1 chooses action: EndTurn() out of:
-  EndTurn        |                                                                    |  prob=1.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  EndTurn        |                                                                  |  prob=1.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
@@ -666,11 +768,11 @@ roll: 9 -> Player 2 gets resource (3) from hex 11 for settlement at vertex 25
 
 
 Player 1 chooses action: EndTurn() out of:
-  EndTurn        |                                                                    |  prob=1.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  EndTurn        |                                                                  |  prob=1.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
@@ -880,36 +982,36 @@ roll: 9 -> Player 2 gets resource (3) from hex 11 for settlement at vertex 25
 
 
 Player 1 chooses action: BuildRoad(edge=27) out of:
-  BuildRoad      | edge=26                                                            |  prob=0.000000
-  BuildRoad      | edge=27                                                            |  prob=0.996742
-  BuildRoad      | edge=37                                                            |  prob=0.002043
-  BuildRoad      | edge=42                                                            |  prob=0.000000
-  BuildRoad      | edge=43                                                            |  prob=0.000000
-  BuildRoad      | edge=46                                                            |  prob=0.000000
-  BuildRoad      | edge=48                                                            |  prob=0.000000
-  BuildRoad      | edge=53                                                            |  prob=0.001200
-  EndTurn        |                                                                    |  prob=0.000015
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Wheat,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  BuildRoad      | edge=26                                                          |  prob=0.000000
+  BuildRoad      | edge=27                                                          |  prob=0.996742
+  BuildRoad      | edge=37                                                          |  prob=0.002043
+  BuildRoad      | edge=42                                                          |  prob=0.000000
+  BuildRoad      | edge=43                                                          |  prob=0.000000
+  BuildRoad      | edge=46                                                          |  prob=0.000000
+  BuildRoad      | edge=48                                                          |  prob=0.000000
+  BuildRoad      | edge=53                                                          |  prob=0.001200
+  EndTurn        |                                                                  |  prob=0.000015
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
 Player 1 chooses action: EndTurn() out of:
-  EndTurn        |                                                                    |  prob=0.999658
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000342
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Wheat,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.999658
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000342
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
@@ -1132,49 +1234,36 @@ roll: 8 -> Player 1 gets resource (0) from hex 15 for settlement at vertex 35
 
 
 Player 1 chooses action: TradeWithBank(give_resource=<Resource.SHEEP: 2>, give_amount=4, receive_resource=<Resource.WOOD: 0>, receive_amount=1) out of:
-  EndTurn        |                                                                    |  prob=0.424898
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000075
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Wheat,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.575027
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Wheat,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
-
-
-
-Player 1 chooses action: TradeWithBank(give_resource=<Resource.SHEEP: 2>, give_amount=4, receive_resource=<Resource.WOOD: 0>, receive_amount=1) out of:
-  EndTurn        |                                                                    |  prob=0.538324
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000067
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Wheat,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.461610
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Wheat,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.424898
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000075
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.575027
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
 Player 1 chooses action: EndTurn() out of:
-  EndTurn        |                                                                    |  prob=0.999913
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000087
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Wheat,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.538324
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000067
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.461610
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
@@ -1196,7 +1285,7 @@ roll: 8 -> Player 1 gets resource (0) from hex 15 for settlement at vertex 35
     Board hex terrain ('board.hex_terrain'): [3, 2, 5, 5, 3, 0, 5, 1, 4, 2, 3, 4, 4, 3, 2, 1, 2, 1, 1]
 
   Player 1:
-    Resources ('playerState.resources'): [7, 0, 1, 9, 0]
+    Resources ('playerState.resources'): [6, 0, 5, 9, 0]
     Settlements ('playerState.settlements'): [31, 35]
     Cities ('playerState.cities'): []
     Roads ('playerState.roads'): [27, 35, 47]
@@ -1246,7 +1335,7 @@ roll: 8 -> Player 1 gets resource (0) from hex 15 for settlement at vertex 35
     Board hex terrain ('board.hex_terrain'): [3, 2, 5, 5, 3, 0, 5, 1, 4, 2, 3, 4, 4, 3, 2, 1, 2, 1, 1]
 
   Player 1:
-    Resources ('playerState.resources'): [8, 0, 2, 9, 0]
+    Resources ('playerState.resources'): [7, 0, 6, 9, 0]
     Settlements ('playerState.settlements'): [31, 35]
     Cities ('playerState.cities'): []
     Roads ('playerState.roads'): [27, 35, 47]
@@ -1296,7 +1385,7 @@ roll: 12 -> Player 1 gets resource (3) from hex 8 for settlement at vertex 31
     Board hex terrain ('board.hex_terrain'): [3, 2, 5, 5, 3, 0, 5, 1, 4, 2, 3, 4, 4, 3, 2, 1, 2, 1, 1]
 
   Player 1:
-    Resources ('playerState.resources'): [8, 0, 2, 10, 0]
+    Resources ('playerState.resources'): [7, 0, 6, 10, 0]
     Settlements ('playerState.settlements'): [31, 35]
     Cities ('playerState.cities'): []
     Roads ('playerState.roads'): [27, 35, 47]
@@ -1342,7 +1431,7 @@ roll: 9 -> Player 1 gets resource (3) from hex 11 for settlement at vertex 35
     Board hex terrain ('board.hex_terrain'): [3, 2, 5, 5, 3, 0, 5, 1, 4, 2, 3, 4, 4, 3, 2, 1, 2, 1, 1]
 
   Player 1:
-    Resources ('playerState.resources'): [8, 0, 2, 11, 0]
+    Resources ('playerState.resources'): [7, 0, 6, 11, 0]
     Settlements ('playerState.settlements'): [31, 35]
     Cities ('playerState.cities'): []
     Roads ('playerState.roads'): [27, 35, 47]
@@ -1368,15 +1457,19 @@ roll: 9 -> Player 1 gets resource (3) from hex 11 for settlement at vertex 35
 
 
 Player 1 chooses action: EndTurn() out of:
-  EndTurn        |                                                                    |  prob=0.999990
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000010
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Wheat,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.973254
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000012
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.026734
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
@@ -1398,7 +1491,7 @@ roll: 5 -> Player 2 gets resource (2) from hex 13 for settlement at vertex 41
     Board hex terrain ('board.hex_terrain'): [3, 2, 5, 5, 3, 0, 5, 1, 4, 2, 3, 4, 4, 3, 2, 1, 2, 1, 1]
 
   Player 1:
-    Resources ('playerState.resources'): [8, 0, 3, 11, 0]
+    Resources ('playerState.resources'): [7, 0, 7, 11, 0]
     Settlements ('playerState.settlements'): [31, 35]
     Cities ('playerState.cities'): []
     Roads ('playerState.roads'): [27, 35, 47]
@@ -1474,7 +1567,7 @@ roll: 11 -> Player 4 gets resource (1) from hex 9 for settlement at vertex 33
     Board hex terrain ('board.hex_terrain'): [3, 2, 5, 5, 3, 0, 5, 1, 4, 2, 3, 4, 4, 3, 2, 1, 2, 1, 1]
 
   Player 1:
-    Resources ('playerState.resources'): [8, 1, 3, 11, 0]
+    Resources ('playerState.resources'): [7, 1, 7, 11, 0]
     Settlements ('playerState.settlements'): [31, 35]
     Cities ('playerState.cities'): []
     Roads ('playerState.roads'): [27, 35, 47]
@@ -1535,7 +1628,7 @@ roll: 3 -> Player 4 gets resource (1) from hex 14 for settlement at vertex 43
     Board hex terrain ('board.hex_terrain'): [3, 2, 5, 5, 3, 0, 5, 1, 4, 2, 3, 4, 4, 3, 2, 1, 2, 1, 1]
 
   Player 1:
-    Resources ('playerState.resources'): [8, 1, 3, 11, 0]
+    Resources ('playerState.resources'): [7, 1, 7, 11, 0]
     Settlements ('playerState.settlements'): [31, 35]
     Cities ('playerState.cities'): []
     Roads ('playerState.roads'): [27, 35, 47]
@@ -1590,7 +1683,7 @@ roll: 9 -> Player 1 gets resource (3) from hex 11 for settlement at vertex 35
     Board hex terrain ('board.hex_terrain'): [3, 2, 5, 5, 3, 0, 5, 1, 4, 2, 3, 4, 4, 3, 2, 1, 2, 1, 1]
 
   Player 1:
-    Resources ('playerState.resources'): [8, 1, 3, 12, 0]
+    Resources ('playerState.resources'): [7, 1, 7, 12, 0]
     Settlements ('playerState.settlements'): [31, 35]
     Cities ('playerState.cities'): []
     Roads ('playerState.roads'): [27, 35, 47]
@@ -1616,60 +1709,81 @@ roll: 9 -> Player 1 gets resource (3) from hex 11 for settlement at vertex 35
 
 
 Player 1 chooses action: BuildRoad(edge=37) out of:
-  BuildRoad      | edge=26                                                            |  prob=0.000000
-  BuildRoad      | edge=37                                                            |  prob=1.000000
-  BuildRoad      | edge=42                                                            |  prob=0.000000
-  BuildRoad      | edge=43                                                            |  prob=0.000000
-  BuildRoad      | edge=46                                                            |  prob=0.000000
-  BuildRoad      | edge=48                                                            |  prob=0.000000
-  BuildRoad      | edge=53                                                            |  prob=0.000000
-  EndTurn        |                                                                    |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Wheat,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  BuildRoad      | edge=26                                                          |  prob=0.000000
+  BuildRoad      | edge=37                                                          |  prob=0.729396
+  BuildRoad      | edge=42                                                          |  prob=0.000000
+  BuildRoad      | edge=43                                                          |  prob=0.000000
+  BuildRoad      | edge=46                                                          |  prob=0.000000
+  BuildRoad      | edge=48                                                          |  prob=0.000000
+  BuildRoad      | edge=53                                                          |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.270604
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+
+
+
+Player 1 chooses action: TradeWithBank(give_resource=<Resource.SHEEP: 2>, give_amount=4, receive_resource=<Resource.WOOD: 0>, receive_amount=1) out of:
+  EndTurn        |                                                                  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=1.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
 Player 1 chooses action: TradeWithBank(give_resource=<Resource.WOOD: 0>, give_amount=4, receive_resource=<Resource.BRICKS: 1>, receive_amount=1) out of:
-  EndTurn        |                                                                    |  prob=0.130742
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.869258
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Wheat,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.130742
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.869258
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
 Player 1 chooses action: BuildRoad(edge=30) out of:
-  BuildRoad      | edge=26                                                            |  prob=0.000000
-  BuildRoad      | edge=30                                                            |  prob=1.000000
-  BuildRoad      | edge=42                                                            |  prob=0.000000
-  BuildRoad      | edge=43                                                            |  prob=0.000000
-  BuildRoad      | edge=46                                                            |  prob=0.000000
-  BuildRoad      | edge=48                                                            |  prob=0.000000
-  BuildRoad      | edge=53                                                            |  prob=0.000000
-  EndTurn        |                                                                    |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  BuildRoad      | edge=26                                                          |  prob=0.000000
+  BuildRoad      | edge=30                                                          |  prob=1.000000
+  BuildRoad      | edge=42                                                          |  prob=0.000000
+  BuildRoad      | edge=43                                                          |  prob=0.000000
+  BuildRoad      | edge=46                                                          |  prob=0.000000
+  BuildRoad      | edge=48                                                          |  prob=0.000000
+  BuildRoad      | edge=53                                                          |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
 Player 1 chooses action: EndTurn() out of:
-  EndTurn        |                                                                    |  prob=0.999998
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000002
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.999998
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000002
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
@@ -1880,24 +1994,24 @@ roll: 10 -> Player 4 gets resource (0) from hex 18 for settlement at vertex 43
 
 
 Player 1 chooses action: TradeWithBank(give_resource=<Resource.SHEEP: 2>, give_amount=4, receive_resource=<Resource.WOOD: 0>, receive_amount=1) out of:
-  EndTurn        |                                                                    |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=1.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Wheat,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=1.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
 Player 1 chooses action: EndTurn() out of:
-  EndTurn        |                                                                    |  prob=0.999998
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000001
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.999998
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000001
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
@@ -2122,24 +2236,24 @@ roll: 3 -> Player 4 gets resource (1) from hex 14 for settlement at vertex 43
 
 
 Player 1 chooses action: TradeWithBank(give_resource=<Resource.WOOD: 0>, give_amount=4, receive_resource=<Resource.BRICKS: 1>, receive_amount=1) out of:
-  EndTurn        |                                                                    |  prob=0.000053
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.999947
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Wheat,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.000053
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.999947
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
 Player 1 chooses action: EndTurn() out of:
-  EndTurn        |                                                                    |  prob=0.999996
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000002
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000002
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.999996
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000002
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000002
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
@@ -2410,32 +2524,32 @@ roll: 8 -> Player 1 gets resource (0) from hex 15 for settlement at vertex 35
 
 
 Player 1 chooses action: BuildSettlement(vertex=21) out of:
-  BuildRoad      | edge=20                                                            |  prob=0.000000
-  BuildRoad      | edge=21                                                            |  prob=0.000000
-  BuildRoad      | edge=26                                                            |  prob=0.000000
-  BuildRoad      | edge=28                                                            |  prob=0.000000
-  BuildRoad      | edge=29                                                            |  prob=0.000000
-  BuildRoad      | edge=42                                                            |  prob=0.000000
-  BuildRoad      | edge=43                                                            |  prob=0.000000
-  BuildRoad      | edge=46                                                            |  prob=0.000000
-  BuildRoad      | edge=48                                                            |  prob=0.000000
-  BuildRoad      | edge=53                                                            |  prob=0.000000
-  BuildSettlement | vertex=21                                                          |  prob=1.000000
-  BuildSettlement | vertex=23                                                          |  prob=0.000000
-  EndTurn        |                                                                    |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  BuildRoad      | edge=20                                                          |  prob=0.000000
+  BuildRoad      | edge=21                                                          |  prob=0.000000
+  BuildRoad      | edge=26                                                          |  prob=0.000000
+  BuildRoad      | edge=28                                                          |  prob=0.000000
+  BuildRoad      | edge=29                                                          |  prob=0.000000
+  BuildRoad      | edge=42                                                          |  prob=0.000000
+  BuildRoad      | edge=43                                                          |  prob=0.000000
+  BuildRoad      | edge=46                                                          |  prob=0.000000
+  BuildRoad      | edge=48                                                          |  prob=0.000000
+  BuildRoad      | edge=53                                                          |  prob=0.000000
+  BuildSettlement | vertex=21                                                        |  prob=1.000000
+  BuildSettlement | vertex=23                                                        |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
 Player 1 chooses action: EndTurn() out of:
-  EndTurn        |                                                                    |  prob=0.999983
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000008
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000008
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.999983
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000008
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000008
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
@@ -2699,34 +2813,34 @@ roll: 11 -> Player 4 gets resource (1) from hex 9 for settlement at vertex 33
 
 
 Player 1 chooses action: BuildSettlement(vertex=23) out of:
-  BuildRoad      | edge=20                                                            |  prob=0.000000
-  BuildRoad      | edge=21                                                            |  prob=0.000000
-  BuildRoad      | edge=26                                                            |  prob=0.000000
-  BuildRoad      | edge=28                                                            |  prob=0.000000
-  BuildRoad      | edge=29                                                            |  prob=0.000000
-  BuildRoad      | edge=42                                                            |  prob=0.000000
-  BuildRoad      | edge=43                                                            |  prob=0.000000
-  BuildRoad      | edge=46                                                            |  prob=0.000000
-  BuildRoad      | edge=53                                                            |  prob=0.000000
-  BuildSettlement | vertex=23                                                          |  prob=0.999762
-  EndTurn        |                                                                    |  prob=0.000000
-  TradeWithBank  |  give=Brick,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000001
-  TradeWithBank  |  give=Brick,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Brick,  give_amount=None,  receive=Wheat,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Brick,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000237
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  BuildRoad      | edge=20                                                          |  prob=0.000000
+  BuildRoad      | edge=21                                                          |  prob=0.000000
+  BuildRoad      | edge=26                                                          |  prob=0.000000
+  BuildRoad      | edge=28                                                          |  prob=0.000000
+  BuildRoad      | edge=29                                                          |  prob=0.000000
+  BuildRoad      | edge=42                                                          |  prob=0.000000
+  BuildRoad      | edge=43                                                          |  prob=0.000000
+  BuildRoad      | edge=46                                                          |  prob=0.000000
+  BuildRoad      | edge=53                                                          |  prob=0.000000
+  BuildSettlement | vertex=23                                                        |  prob=0.999762
+  EndTurn        |                                                                  |  prob=0.000000
+  TradeWithBank  |  give=Brick,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000001
+  TradeWithBank  |  give=Brick,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Brick,  give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Brick,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000237
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
 Player 1 chooses action: EndTurn() out of:
-  EndTurn        |                                                                    |  prob=0.999957
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000004
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000038
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.999957
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000004
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000038
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
@@ -2959,59 +3073,59 @@ roll: 8 -> Player 4 gets resource (0) from hex 15 for settlement at vertex 45
 
 
 Player 1 chooses action: TradeWithBank(give_resource=<Resource.SHEEP: 2>, give_amount=4, receive_resource=<Resource.WOOD: 0>, receive_amount=1) out of:
-  BuildRoad      | edge=20                                                            |  prob=0.000000
-  BuildRoad      | edge=21                                                            |  prob=0.000000
-  BuildRoad      | edge=26                                                            |  prob=0.000000
-  BuildRoad      | edge=28                                                            |  prob=0.000000
-  BuildRoad      | edge=29                                                            |  prob=0.000000
-  BuildRoad      | edge=42                                                            |  prob=0.000000
-  BuildRoad      | edge=43                                                            |  prob=0.000000
-  BuildRoad      | edge=46                                                            |  prob=0.000000
-  BuildRoad      | edge=53                                                            |  prob=0.000000
-  EndTurn        |                                                                    |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=1.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Wheat,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  BuildRoad      | edge=20                                                          |  prob=0.000000
+  BuildRoad      | edge=21                                                          |  prob=0.000000
+  BuildRoad      | edge=26                                                          |  prob=0.000000
+  BuildRoad      | edge=28                                                          |  prob=0.000000
+  BuildRoad      | edge=29                                                          |  prob=0.000000
+  BuildRoad      | edge=42                                                          |  prob=0.000000
+  BuildRoad      | edge=43                                                          |  prob=0.000000
+  BuildRoad      | edge=46                                                          |  prob=0.000000
+  BuildRoad      | edge=53                                                          |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=1.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
 Player 1 chooses action: BuildRoad(edge=53) out of:
-  BuildRoad      | edge=20                                                            |  prob=0.000000
-  BuildRoad      | edge=21                                                            |  prob=0.000000
-  BuildRoad      | edge=26                                                            |  prob=0.000000
-  BuildRoad      | edge=28                                                            |  prob=0.000000
-  BuildRoad      | edge=29                                                            |  prob=0.000000
-  BuildRoad      | edge=42                                                            |  prob=0.000000
-  BuildRoad      | edge=43                                                            |  prob=0.000000
-  BuildRoad      | edge=46                                                            |  prob=0.000000
-  BuildRoad      | edge=53                                                            |  prob=0.976228
-  EndTurn        |                                                                    |  prob=0.023771
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000001
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  BuildRoad      | edge=20                                                          |  prob=0.000000
+  BuildRoad      | edge=21                                                          |  prob=0.000000
+  BuildRoad      | edge=26                                                          |  prob=0.000000
+  BuildRoad      | edge=28                                                          |  prob=0.000000
+  BuildRoad      | edge=29                                                          |  prob=0.000000
+  BuildRoad      | edge=42                                                          |  prob=0.000000
+  BuildRoad      | edge=43                                                          |  prob=0.000000
+  BuildRoad      | edge=46                                                          |  prob=0.000000
+  BuildRoad      | edge=53                                                          |  prob=0.976228
+  EndTurn        |                                                                  |  prob=0.023771
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000001
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
 Player 1 chooses action: EndTurn() out of:
-  BuildRoad      | edge=20                                                            |  prob=0.000000
-  BuildRoad      | edge=21                                                            |  prob=0.000000
-  BuildRoad      | edge=26                                                            |  prob=0.000000
-  BuildRoad      | edge=28                                                            |  prob=0.000000
-  BuildRoad      | edge=29                                                            |  prob=0.000000
-  BuildRoad      | edge=42                                                            |  prob=0.000000
-  BuildRoad      | edge=43                                                            |  prob=0.000000
-  BuildRoad      | edge=46                                                            |  prob=0.000000
-  EndTurn        |                                                                    |  prob=0.999948
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000007
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000044
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  BuildRoad      | edge=20                                                          |  prob=0.000000
+  BuildRoad      | edge=21                                                          |  prob=0.000000
+  BuildRoad      | edge=26                                                          |  prob=0.000000
+  BuildRoad      | edge=28                                                          |  prob=0.000000
+  BuildRoad      | edge=29                                                          |  prob=0.000000
+  BuildRoad      | edge=42                                                          |  prob=0.000000
+  BuildRoad      | edge=43                                                          |  prob=0.000000
+  BuildRoad      | edge=46                                                          |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.999948
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000007
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000044
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
@@ -3337,19 +3451,19 @@ roll: 6 -> Player 4 gets resource (0) from hex 17 for settlement at vertex 43
 
 
 Player 1 chooses action: EndTurn() out of:
-  BuildRoad      | edge=20                                                            |  prob=0.000000
-  BuildRoad      | edge=21                                                            |  prob=0.000000
-  BuildRoad      | edge=26                                                            |  prob=0.000000
-  BuildRoad      | edge=28                                                            |  prob=0.000000
-  BuildRoad      | edge=29                                                            |  prob=0.000000
-  BuildRoad      | edge=42                                                            |  prob=0.000000
-  BuildRoad      | edge=43                                                            |  prob=0.000000
-  BuildRoad      | edge=46                                                            |  prob=0.000000
-  EndTurn        |                                                                    |  prob=0.999933
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000020
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000047
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  BuildRoad      | edge=20                                                          |  prob=0.000000
+  BuildRoad      | edge=21                                                          |  prob=0.000000
+  BuildRoad      | edge=26                                                          |  prob=0.000000
+  BuildRoad      | edge=28                                                          |  prob=0.000000
+  BuildRoad      | edge=29                                                          |  prob=0.000000
+  BuildRoad      | edge=42                                                          |  prob=0.000000
+  BuildRoad      | edge=43                                                          |  prob=0.000000
+  BuildRoad      | edge=46                                                          |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.999933
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000020
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000047
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
@@ -3642,53 +3756,53 @@ roll: 3 -> Player 4 gets resource (1) from hex 14 for settlement at vertex 43
 
 
 Player 1 chooses action: TradeWithBank(give_resource=<Resource.SHEEP: 2>, give_amount=4, receive_resource=<Resource.WOOD: 0>, receive_amount=1) out of:
-  BuildRoad      | edge=20                                                            |  prob=0.000000
-  BuildRoad      | edge=21                                                            |  prob=0.000000
-  BuildRoad      | edge=26                                                            |  prob=0.000000
-  BuildRoad      | edge=28                                                            |  prob=0.000000
-  BuildRoad      | edge=29                                                            |  prob=0.000000
-  BuildRoad      | edge=42                                                            |  prob=0.000000
-  BuildRoad      | edge=43                                                            |  prob=0.000000
-  BuildRoad      | edge=46                                                            |  prob=0.000000
-  EndTurn        |                                                                    |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=1.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Wheat,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  BuildRoad      | edge=20                                                          |  prob=0.000000
+  BuildRoad      | edge=21                                                          |  prob=0.000000
+  BuildRoad      | edge=26                                                          |  prob=0.000000
+  BuildRoad      | edge=28                                                          |  prob=0.000000
+  BuildRoad      | edge=29                                                          |  prob=0.000000
+  BuildRoad      | edge=42                                                          |  prob=0.000000
+  BuildRoad      | edge=43                                                          |  prob=0.000000
+  BuildRoad      | edge=46                                                          |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=1.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
 Player 1 chooses action: TradeWithBank(give_resource=<Resource.WOOD: 0>, give_amount=4, receive_resource=<Resource.BRICKS: 1>, receive_amount=1) out of:
-  BuildRoad      | edge=20                                                            |  prob=0.000000
-  BuildRoad      | edge=21                                                            |  prob=0.000000
-  BuildRoad      | edge=26                                                            |  prob=0.000000
-  BuildRoad      | edge=28                                                            |  prob=0.000000
-  BuildRoad      | edge=29                                                            |  prob=0.000000
-  BuildRoad      | edge=42                                                            |  prob=0.000000
-  BuildRoad      | edge=43                                                            |  prob=0.000000
-  BuildRoad      | edge=46                                                            |  prob=0.000000
-  EndTurn        |                                                                    |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Brick,  receive_amount=1  |  prob=1.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Wheat,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  BuildRoad      | edge=20                                                          |  prob=0.000000
+  BuildRoad      | edge=21                                                          |  prob=0.000000
+  BuildRoad      | edge=26                                                          |  prob=0.000000
+  BuildRoad      | edge=28                                                          |  prob=0.000000
+  BuildRoad      | edge=29                                                          |  prob=0.000000
+  BuildRoad      | edge=42                                                          |  prob=0.000000
+  BuildRoad      | edge=43                                                          |  prob=0.000000
+  BuildRoad      | edge=46                                                          |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Brick,  receive_amount=1  |  prob=1.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
 Player 1 chooses action: EndTurn() out of:
-  EndTurn        |                                                                    |  prob=0.999923
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000022
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000054
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.999923
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000022
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000054
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
@@ -4024,40 +4138,40 @@ roll: 8 -> Player 4 gets resource (0) from hex 15 for settlement at vertex 45
 
 
 Player 1 chooses action: TradeWithBank(give_resource=<Resource.SHEEP: 2>, give_amount=4, receive_resource=<Resource.WOOD: 0>, receive_amount=1) out of:
-  BuildRoad      | edge=20                                                            |  prob=0.000000
-  BuildRoad      | edge=21                                                            |  prob=0.000000
-  BuildRoad      | edge=26                                                            |  prob=0.000000
-  BuildRoad      | edge=28                                                            |  prob=0.000000
-  BuildRoad      | edge=29                                                            |  prob=0.000000
-  BuildRoad      | edge=42                                                            |  prob=0.000000
-  BuildRoad      | edge=43                                                            |  prob=0.000000
-  BuildRoad      | edge=46                                                            |  prob=0.000000
-  EndTurn        |                                                                    |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=1.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Wheat,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  BuildRoad      | edge=20                                                          |  prob=0.000000
+  BuildRoad      | edge=21                                                          |  prob=0.000000
+  BuildRoad      | edge=26                                                          |  prob=0.000000
+  BuildRoad      | edge=28                                                          |  prob=0.000000
+  BuildRoad      | edge=29                                                          |  prob=0.000000
+  BuildRoad      | edge=42                                                          |  prob=0.000000
+  BuildRoad      | edge=43                                                          |  prob=0.000000
+  BuildRoad      | edge=46                                                          |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=1.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
 Player 1 chooses action: EndTurn() out of:
-  BuildRoad      | edge=20                                                            |  prob=0.000000
-  BuildRoad      | edge=21                                                            |  prob=0.000000
-  BuildRoad      | edge=26                                                            |  prob=0.000000
-  BuildRoad      | edge=28                                                            |  prob=0.000000
-  BuildRoad      | edge=29                                                            |  prob=0.000000
-  BuildRoad      | edge=42                                                            |  prob=0.000000
-  BuildRoad      | edge=43                                                            |  prob=0.000000
-  BuildRoad      | edge=46                                                            |  prob=0.000000
-  EndTurn        |                                                                    |  prob=0.999806
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000021
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000172
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  BuildRoad      | edge=20                                                          |  prob=0.000000
+  BuildRoad      | edge=21                                                          |  prob=0.000000
+  BuildRoad      | edge=26                                                          |  prob=0.000000
+  BuildRoad      | edge=28                                                          |  prob=0.000000
+  BuildRoad      | edge=29                                                          |  prob=0.000000
+  BuildRoad      | edge=42                                                          |  prob=0.000000
+  BuildRoad      | edge=43                                                          |  prob=0.000000
+  BuildRoad      | edge=46                                                          |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.999806
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000021
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000172
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
@@ -4279,66 +4393,66 @@ roll: 5 -> Player 1 gets resource (2) from hex 13 for settlement at vertex 31
 
 
 Player 1 chooses action: TradeWithBank(give_resource=<Resource.SHEEP: 2>, give_amount=4, receive_resource=<Resource.WOOD: 0>, receive_amount=1) out of:
-  BuildRoad      | edge=20                                                            |  prob=0.000000
-  BuildRoad      | edge=21                                                            |  prob=0.000000
-  BuildRoad      | edge=26                                                            |  prob=0.000000
-  BuildRoad      | edge=28                                                            |  prob=0.000000
-  BuildRoad      | edge=29                                                            |  prob=0.000000
-  BuildRoad      | edge=42                                                            |  prob=0.000000
-  BuildRoad      | edge=43                                                            |  prob=0.000000
-  BuildRoad      | edge=46                                                            |  prob=0.000000
-  EndTurn        |                                                                    |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=1.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Wheat,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Sheep,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  BuildRoad      | edge=20                                                          |  prob=0.000000
+  BuildRoad      | edge=21                                                          |  prob=0.000000
+  BuildRoad      | edge=26                                                          |  prob=0.000000
+  BuildRoad      | edge=28                                                          |  prob=0.000000
+  BuildRoad      | edge=29                                                          |  prob=0.000000
+  BuildRoad      | edge=42                                                          |  prob=0.000000
+  BuildRoad      | edge=43                                                          |  prob=0.000000
+  BuildRoad      | edge=46                                                          |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=1.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Sheep,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
 Player 1 chooses action: TradeWithBank(give_resource=<Resource.WOOD: 0>, give_amount=4, receive_resource=<Resource.BRICKS: 1>, receive_amount=1) out of:
-  BuildRoad      | edge=20                                                            |  prob=0.000000
-  BuildRoad      | edge=21                                                            |  prob=0.000000
-  BuildRoad      | edge=26                                                            |  prob=0.000000
-  BuildRoad      | edge=28                                                            |  prob=0.000000
-  BuildRoad      | edge=29                                                            |  prob=0.000000
-  BuildRoad      | edge=42                                                            |  prob=0.000000
-  BuildRoad      | edge=43                                                            |  prob=0.000000
-  BuildRoad      | edge=46                                                            |  prob=0.000000
-  EndTurn        |                                                                    |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Brick,  receive_amount=1  |  prob=1.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Wheat,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wood,   give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  BuildRoad      | edge=20                                                          |  prob=0.000000
+  BuildRoad      | edge=21                                                          |  prob=0.000000
+  BuildRoad      | edge=26                                                          |  prob=0.000000
+  BuildRoad      | edge=28                                                          |  prob=0.000000
+  BuildRoad      | edge=29                                                          |  prob=0.000000
+  BuildRoad      | edge=42                                                          |  prob=0.000000
+  BuildRoad      | edge=43                                                          |  prob=0.000000
+  BuildRoad      | edge=46                                                          |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Brick,  receive_amount=1  |  prob=1.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wood,   give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
 Player 1 chooses action: TradeWithBank(give_resource=<Resource.BRICKS: 1>, give_amount=4, receive_resource=<Resource.ORE: 4>, receive_amount=1) out of:
-  EndTurn        |                                                                    |  prob=0.000000
-  TradeWithBank  |  give=Brick,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000116
-  TradeWithBank  |  give=Brick,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Brick,  give_amount=None,  receive=Wheat,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Brick,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.999884
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.000000
+  TradeWithBank  |  give=Brick,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000116
+  TradeWithBank  |  give=Brick,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Brick,  give_amount=4,   receive=Wheat,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Brick,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.999884
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
 Player 1 chooses action: EndTurn() out of:
-  EndTurn        |                                                                    |  prob=0.999842
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Wood,   receive_amount=1  |  prob=0.000023
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Brick,  receive_amount=1  |  prob=0.000000
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Sheep,  receive_amount=1  |  prob=0.000135
-  TradeWithBank  |  give=Wheat,  give_amount=None,  receive=Ore,    receive_amount=1  |  prob=0.000000
+  EndTurn        |                                                                  |  prob=0.999842
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Wood,   receive_amount=1  |  prob=0.000023
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Brick,  receive_amount=1  |  prob=0.000000
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Sheep,  receive_amount=1  |  prob=0.000135
+  TradeWithBank  |  give=Wheat,  give_amount=4,   receive=Ore,    receive_amount=1  |  prob=0.000000
 
 
 
