@@ -157,12 +157,13 @@ def simulate_game(strategies, env, game_state: GameState, n_turns: int = 10, vis
             step(game_state, strategies, rng, env, log)
             game_states.append(game_state.copy())
         
+            if visualise:
+                draw(game_state.copy())
+                
         if any(p.victory_points >= 10 for p in game_state.players):
             print(colours.colour_text("Game over!", "yellow"))
             break
 
-    if visualise:
-        draw(game_states)
 
     return game_states
     
@@ -271,14 +272,23 @@ def step(state: GameState, strategies, rng, env, log: bool):
                     elif isinstance(decoded, TradeWithBank):
                         action_type = "TradeWithBank"
 
-                        give           = int(decoded.give_resource)
-                        give_amount    = decoded.give_amount
-                        receive        = int(decoded.receive_resource)
-                        receive_amount = decoded.receive_amount
+                        give    = int(decoded.give_resource)
+                        receive = int(decoded.receive_resource)
+
+                        give_amount = None
+                        receive_amount = None
+
+                        for action in generate_legal_actions(state):
+                            if (isinstance(action, TradeWithBank) and
+                                action.give_resource == decoded.give_resource and
+                                action.receive_resource == decoded.receive_resource):
+                                give_amount = action.give_amount
+                                receive_amount = action.receive_amount
+                                break
 
                         info = (
                             f"{f' give={RESOURCE_NAMES[give]}, ':13}"
-                            f"{f' give_amount={give_amount}, ':19}"
+                            f"{f' give_amount={give_amount}, ':17}"
                             f"{f' receive={RESOURCE_NAMES[receive]}, ':16}"
                             f"{f' receive_amount={receive_amount}':17}"
                         )
@@ -288,7 +298,7 @@ def step(state: GameState, strategies, rng, env, log: bool):
                         info=""
                     
                     print(
-                        f"  {action_type:14} | {info:66} |  prob={p:.6f}"
+                        f"  {action_type:14} | {info:64} |  prob={p:.6f}"
                     )
                     
                 print("\n")
