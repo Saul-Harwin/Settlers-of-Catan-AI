@@ -248,3 +248,12 @@ PLAYER_COLORS = {
     4: "#2F0033",
     5: "#FFFFFF",
 }
+
+# Define action space indices:
+ACTION_BUILD_ROAD_START = 0                # 0–71
+ACTION_BUILD_SETTLEMENT_START = 72         # 72–125
+ACTION_BUILD_CITY_START = 126              # 126–179
+ACTION_END_TURN = 180                      # 180
+ACTION_TRADE_START = 181                   # 181–200
+
+TOTAL_ACTIONS = 201

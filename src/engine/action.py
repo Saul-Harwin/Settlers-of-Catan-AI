@@ -45,3 +45,4 @@ GameAction = Union[
     MoveRobber,
     EndTurn,
 ]
+
