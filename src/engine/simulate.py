@@ -13,6 +13,7 @@ from logic.strategies import RandomStrategy, HeuristicStrategy
 from learning.agent import PPOAgent
 
 from tools.visualiser import draw, draw_many_states
+from tools.colour_text import colours
 
 from map.helpers import adjacent_hexes
 from map.geometry import EDGE_VERTEX_INDICES, TILE_VERTICES, VERTEX_NEIGHBORS, PIP_WEIGHT
@@ -115,7 +116,7 @@ def seed_starting_positions(state, player_idx, strategy, rng):
     player.roads.add(best_edge)
 
 def simulate_game(strategies, env, game_state: GameState, n_turns: int = 10, visualise: bool = True, rng: random.Random = random, log: bool = True) -> GameState:
-    print("Simulating Catan Game")
+    print(colours.colour_text("Simulating Catan Game", "magenta"))
     game_states = []
     # strategies = [HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy()]
     
@@ -135,28 +136,29 @@ def simulate_game(strategies, env, game_state: GameState, n_turns: int = 10, vis
     game_states.append(game_state.copy())
     
     for turn in range(n_turns):
-        
-        if log:
-            print(game_state)
+        print(colours.colour_text(f"\n---------------------------------------------------------------------------------------------------------------------------------------------------------\n", "magenta"))
         
         roll_val = roll(rng)
         
         if roll_val == 7:
             if log:
-                print("Robber activated! Moving robber to random hex. (No stealing implemented yet)")
+                print(colours.colour_text("Robber activated! Moving robber to random hex. (No stealing implemented yet)", "yellow"))
             move_robber(game_state, new_hex=game_state.rng.randint(0, 18))      # Need to implement stealing logic first, otherwise just leave robber in place
         
         if log:
-            print(f"Turn {game_state.turn}: Player {game_state.turn % len(game_state.players) + 1} rolled a {roll_val}\n")
+            print(colours.colour_text(f"Turn {game_state.turn}: Player {game_state.turn % len(game_state.players) + 1} rolled a {roll_val}\n", "green"))
         
         resource_production(game_state, roll_val, log)
+
+        if log:
+            print(colours.colour_text(game_state, "cyan"))
 
         while game_state.turn == turn:
             step(game_state, strategies, rng, env, log)
             game_states.append(game_state.copy())
         
         if any(p.victory_points >= 10 for p in game_state.players):
-            print("Game over!")
+            print(colours.colour_text("Game over!", "yellow"))
             break
 
     if visualise:
@@ -191,7 +193,7 @@ def resource_production(state: GameState, roll: int, log=False) -> None:
                 if v in vertices:
                     # [wood, brick, sheep, wheat, rock]
                     if log:
-                        print(f"roll: {roll} -> Player {i+1} gets resource ({state.board.hex_terrain[hex_idx]-1}) from hex {hex_idx} for settlement at vertex {v}")
+                        print(colours.colour_text(f"roll: {roll} -> Player {i+1} gets resource ({state.board.hex_terrain[hex_idx]-1}) from hex {hex_idx} for settlement at vertex {v}", "green"))
                     player.resources[state.board.hex_terrain[hex_idx]-1] += 1
             for v in player.cities:
                 if v in vertices:

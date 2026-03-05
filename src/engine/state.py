@@ -220,16 +220,6 @@ class GameState:
         return resources_tensor
             
     def state_to_tensor(self):
-        # print(self.resources_tensor())
-        # print(self.terrain_tensor())
-        # print(self.edge_tensor())
-        # print(self.vertex_tensor())
-        
-        # print("Terrain:", np.min(self.terrain_tensor()), np.max(self.terrain_tensor()), self.terrain_tensor().shape)
-        # print("Vertex:", np.min(self.vertex_tensor()), np.max(self.vertex_tensor()), self.vertex_tensor().shape)
-        # print("Edge:", np.min(self.edge_tensor()), np.max(self.edge_tensor()), self.edge_tensor().shape)
-        # print("Resources:", np.min(self.resources_tensor()), np.max(self.resources_tensor()), self.resources_tensor().shape)
-        
         input_vector = np.concatenate([
             self.terrain_tensor().flatten(),
             self.vertex_tensor().flatten(),
@@ -240,7 +230,7 @@ class GameState:
         return input_vector
       
     def __str__(self) -> str:
-        start = f"\n-------------------------------------------------------------------------------------------------------------\n                                              Game State: turn={self.turn} \n-------------------------------------------------------------------------------------------------------------\n"
+        start = f"\n---------------------------------------------------------------------------------------------------------------------------------------------------------\n                                                                    Game State: turn={self.turn} \n---------------------------------------------------------------------------------------------------------------------------------------------------------\n"
         
         robber_summary = f"  Robber is on hex {self.robber_hex}"
         
