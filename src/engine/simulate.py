@@ -112,9 +112,10 @@ def seed_starting_positions(state, player_idx, strategy, rng):
     player.victory_points += 1
     player.roads.add(best_edge)
 
-def simulate_game(game_state: GameState, n_turns: int = 10, visualise: bool = True, rng: random.Random = random) -> GameState:
+def simulate_game(strategies, game_state: GameState, n_turns: int = 10, visualise: bool = True, rng: random.Random = random, log: bool = True) -> GameState:
+    print("Simulating Catan Game")
     game_states = []
-    strategies = [HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy()]
+    # strategies = [HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy()]
     
     
     for i in range(len(game_state.players)):
@@ -133,19 +134,24 @@ def simulate_game(game_state: GameState, n_turns: int = 10, visualise: bool = Tr
     game_states.append(game_state.copy())
     
     for turn in range(n_turns):
-        print(game_state)
+        
+        if log:
+            print(game_state)
+        
         roll_val = roll(rng)
         
         if roll_val == 7:
-            print("Robber activated! Moving robber to random hex. (No stealing implemented yet)")
+            if log:
+                print("Robber activated! Moving robber to random hex. (No stealing implemented yet)")
             move_robber(game_state, new_hex=game_state.rng.randint(0, 18))      # Need to implement stealing logic first, otherwise just leave robber in place
-            
-        print(f"Turn {game_state.turn}: Player {game_state.turn % len(game_state.players) + 1} rolled a {roll_val}")
+        
+        if log:
+            print(f"Turn {game_state.turn}: Player {game_state.turn % len(game_state.players) + 1} rolled a {roll_val}")
         
         resource_production(game_state, roll_val)
 
         while game_state.turn == turn:
-            step(game_state, strategies, rng)
+            step(game_state, strategies, rng, log)
             game_states.append(game_state.copy())
         
         if any(p.victory_points >= 10 for p in game_state.players):
@@ -183,14 +189,13 @@ def resource_production(state: GameState, roll: int) -> None:
             for v in player.settlements:
                 if v in vertices:
                     # [wood, brick, sheep, wheat, rock]
-                    print(f"roll: {roll} -> Player {i+1} gets resource from hex {hex_idx} ({state.board.hex_terrain[hex_idx]-1}) for settlement at vertex {v}")
-                    
+                    # print(f"roll: {roll} -> Player {i+1} gets resource from hex {hex_idx} ({state.board.hex_terrain[hex_idx]-1}) for settlement at vertex {v}")
                     player.resources[state.board.hex_terrain[hex_idx]-1] += 1
             for v in player.cities:
                 if v in vertices:
                     player.resources[state.board.hex_terrain[hex_idx]-1] += 2
                     
-def step(state: GameState, strategies, rng):
+def step(state: GameState, strategies, rng, log: bool):
     player_idx = state.get_current_player_idx()
 
     # policy = policies[player_idx]
@@ -198,16 +203,17 @@ def step(state: GameState, strategies, rng):
     chosen = strategy.select_action(state, rng)
 
     # Both These lines purely for printing
-    actions = generate_legal_actions(state, player_idx)
+    actions = generate_legal_actions(state)
     scores  = []
     
     for action in actions:
         hypothetical_state = apply_action(state, player_idx, action)
         scores.append(evaluate_state(hypothetical_state, player_idx, EvalWeights))
     
-    actions_str = f"\n  - ".join(f"{a}:       score={scores[i]}" for i, a in enumerate(actions))
-    print(f"Player {player_idx + 1} chooses action: {chosen} out of:\n  - {actions_str}")
-    print("\n")
+    if log:
+        actions_str = f"\n  - ".join(f"{a}:       score={scores[i]}" for i, a in enumerate(actions))
+        print(f"Player {player_idx + 1} chooses action: {chosen} out of:\n  - {actions_str}")
+        print("\n")
     
     state = execute_action(state, player_idx, chosen)
 
@@ -414,6 +420,8 @@ def execute_action(state, player_idx, action):
     else:
         raise ValueError("Unknown action type")
     
+    return state
+    
 def _place_random_adjacent_road(state, player_idx, vertex, rng):
     neigh_vertices = VERTEX_NEIGHBORS[vertex]
     occupied_edges = set().union(*(p.roads for p in state.players))
@@ -469,9 +477,12 @@ def trade_with_bank(state: GameState, player_idx: int, action: TradeWithBank) ->
 
     if not is_valid_bank_trade(state.board, player, action):
         raise ValueError("Invalid bank trade")
-
+    
+    # print(player.resources)
+    
     player.resources[action.give_resource] -= action.give_amount
-    player.resources[action.receive_resource] += action.receive_amount
+    if not all(r >= 253 for r in player.resources):
+        player.resources[action.receive_resource] += action.receive_amount
 
 def build_progress(player_resources: np.ndarray, cost: np.ndarray) -> float:
     # Convert to signed int to prevent underflow
@@ -486,3 +497,53 @@ def build_progress(player_resources: np.ndarray, cost: np.ndarray) -> float:
 
     progress = 1.0 - missing.sum() / total_needed
     return progress
+
+def cap_player_resources(state: GameState):
+    for player in state.players:
+        player.resources = np.minimum(player.resources, 20)
+                
+def tensor_to_state(
+    input_vector: np.ndarray,
+    num_hexes: int = 19,
+    num_vertices: int = 54,
+    num_edges: int = 72,
+    num_players: int = 4,
+    num_terrain_types: int = 6,
+    num_numbers: int = 10,
+    num_resources: int = 5
+):
+    """
+    Converts a flattened state tensor back into the component tensors:
+    terrain, vertex, edge, resources.
+    
+    Returns a dictionary with keys: 'terrain', 'vertex', 'edge', 'resources'
+    """
+    
+    # 1. Terrain tensor
+    terrain_size = num_hexes * (num_terrain_types + num_numbers + 1)  # +1 for robber
+    terrain_flat = input_vector[:terrain_size]
+    terrain_tensor = terrain_flat.reshape((num_hexes, num_terrain_types + num_numbers + 1))
+    
+    # 2. Vertex tensor
+    vertex_size = num_vertices * (num_players + 2)
+    vertex_flat = input_vector[terrain_size : terrain_size + vertex_size]
+    vertex_tensor = vertex_flat.reshape((num_vertices, num_players + 2))
+    
+    # 3. Edge tensor
+    edge_size = num_edges * (num_players + 1)
+    edge_flat = input_vector[terrain_size + vertex_size : terrain_size + vertex_size + edge_size]
+    edge_tensor = edge_flat.reshape((num_edges, num_players + 1))
+    
+    # 4. Resources tensor
+    resources_flat = input_vector[terrain_size + vertex_size + edge_size :]
+    resources_tensor = resources_flat.reshape((num_players, num_resources))
+    
+    return {
+        "terrain": terrain_tensor,
+        "vertex": vertex_tensor,
+        "edge": edge_tensor,
+        "resources": resources_tensor * 20 
+    }     
+                
+                
+                

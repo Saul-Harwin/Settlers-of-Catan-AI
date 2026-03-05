@@ -119,8 +119,8 @@ class GameState:
         Returns the index of the player whose turn it is.
         Assumes turns cycle through the list of players.
         """
-        return self.turn % len(self.players)
-    
+        return self.turn % len(self.players)         
+        
     def terrain_tensor(self):
         """
         | 0 |      -  These first 6 numbers are for the terrain types 
@@ -204,20 +204,19 @@ class GameState:
         return vertex_tensor
         
     def resources_tensor(self):
-        num_players = len(self.players)
-        num_resources = 5  # wood, brick, wheat, sheep, ore
-        
-        resources_tensor = np.zeros((num_players, num_resources), dtype=np.float32)
-            
+        MAX_PLAYERS = 4  # or the fixed number your network expects
+        NUM_RESOURCES = 5
+        max_resource = 20.0
+
+        # Initialize with zeros to pad missing players
+        resources_tensor = np.zeros((MAX_PLAYERS, NUM_RESOURCES), dtype=np.float32)
+
         for player_idx, player in enumerate(self.players):
-            resources_tensor[player_idx] = np.array([
-                player.resources[0],  # wood
-                player.resources[1],  # brick
-                player.resources[2],  # wheat
-                player.resources[3],  # sheep
-                player.resources[4]   # ore
-            ], dtype=np.float32)
-    
+            # Convert to NumPy array first
+            player_resources = np.array(player.resources, dtype=np.float32)
+            # Cap and normalize
+            resources_tensor[player_idx] = np.minimum(player_resources, max_resource) / max_resource
+
         return resources_tensor
             
     def state_to_tensor(self):
@@ -226,6 +225,11 @@ class GameState:
         # print(self.edge_tensor())
         # print(self.vertex_tensor())
         
+        # print("Terrain:", np.min(self.terrain_tensor()), np.max(self.terrain_tensor()), self.terrain_tensor().shape)
+        # print("Vertex:", np.min(self.vertex_tensor()), np.max(self.vertex_tensor()), self.vertex_tensor().shape)
+        # print("Edge:", np.min(self.edge_tensor()), np.max(self.edge_tensor()), self.edge_tensor().shape)
+        # print("Resources:", np.min(self.resources_tensor()), np.max(self.resources_tensor()), self.resources_tensor().shape)
+        
         input_vector = np.concatenate([
             self.terrain_tensor().flatten(),
             self.vertex_tensor().flatten(),
@@ -233,10 +237,8 @@ class GameState:
             self.resources_tensor().flatten()
         ])
         
-        print(input_vector)
         return input_vector
-        
-        
+      
     def __str__(self) -> str:
         start = f"\n-------------------------------------------------------------------------------------------------------------\n                                              Game State: turn={self.turn} \n-------------------------------------------------------------------------------------------------------------\n"
         

@@ -19,7 +19,7 @@ from logic.helpers import get_free_vertices
 class RandomStrategy:
     def select_action(self, state, rng):
         player_idx = state.get_current_player_idx()
-        actions = generate_legal_actions(state, player_idx)
+        actions = generate_legal_actions(state)
         return rng.choice(actions)
 
 
@@ -45,7 +45,7 @@ class HeuristicStrategy:
 
         player_idx = state.get_current_player_idx()
         
-        for action in generate_legal_actions(state, player_idx):
+        for action in generate_legal_actions(state):
             # apply_action already returns a copy, so no need for state.copy()
             hypothetical_state = apply_action(state, player_idx, action)
             score = evaluate_state(hypothetical_state, player_idx, weights)

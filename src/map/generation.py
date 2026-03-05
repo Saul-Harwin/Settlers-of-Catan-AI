@@ -1,6 +1,7 @@
 import numpy as np
 import random
-from .board import Board, STANDARD_PORTS
+from .board import Board, STANDARD_PORTS 
+from engine.state import GameState, PlayerState
 
 
 def generate_board(rng: random.Random) -> Board:
@@ -52,3 +53,22 @@ def generate_board(rng: random.Random) -> Board:
         hex_numbers=hex_numbers,
         ports=STANDARD_PORTS
     )
+
+def initialise_game(seed):
+    # if seed == None:
+    #     rng = random.Random()
+    # else:
+    #     rng = random.Random(seed)
+    
+    rng = random.Random(seed)
+    board = generate_board(rng)
+    turn = 0
+    
+    players = [PlayerState() for _ in range(4)]
+    
+    # place robber on first empty hex (just example)
+    robber_hex = np.where(board.hex_terrain == 0)[0][0]
+    
+    game_state = GameState(board, players, robber_hex, turn, rng)
+    
+    return game_state

@@ -2,11 +2,12 @@ import random
 import typer
 import numpy as np
 
-from map.generation import generate_board
+from map.generation import generate_board, initialise_game
 from engine.state import PlayerState, GameState
 from tools.randomize_player_state import randomize_player_state
 from tools.visualiser import draw
 from engine.simulate import simulate_game
+from logic.strategies import HeuristicStrategy
 
 app = typer.Typer()
 
@@ -17,20 +18,12 @@ def main(
     visualise: bool = typer.Option(True, help="Whether to visualise the game"),
     seed: int = typer.Option(45, help="Random seed"),
 ):
-    rng = random.Random(seed)
-    board = generate_board(rng)
-
-    players = [PlayerState() for _ in range(4)]
-
-    # place robber on first empty hex (just example)
-    robber_hex = np.where(board.hex_terrain == 0)[0][0]
-    turn = 0
-
-    game_state = GameState(board, players, robber_hex, turn, rng)
-    game_state.state_to_tensor()
+    game_state = initialise_game(seed)
+    
+    strategies = [HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy(), HeuristicStrategy()]
 
     # simulate the game
-    game_history = simulate_game(game_state, n_turns=n_turns, visualise=visualise, rng=rng)
+    game_history = simulate_game(strategies=strategies, game_state=game_state, n_turns=n_turns, visualise=visualise, rng=game_state.rng)
 
     # print final game state
     final_state = game_history[-1]
@@ -39,6 +32,7 @@ def main(
     # draw final board
     draw(final_state)
 
+    
 
 if __name__ == "__main__":
     app()
