@@ -36,11 +36,17 @@ class PPOAgent:
 
         import torch
         from torch.distributions import Categorical
+        import numpy as np
 
         # Debug - If this triggers at the beginning of an update call, then: The previous optimizer step created NaN weights.
         for name, p in self.model.named_parameters():
             if torch.isnan(p).any():
                 raise RuntimeError(f"NaN in parameter before update: {name}")
+
+        # ---- LOSS TRACKING (for plots) ----
+        policy_losses = []
+        value_losses = []
+        entropy_losses = []
 
         # ---- Prepare tensors ----
 
@@ -101,8 +107,6 @@ class PPOAgent:
                 # Prevent overflow in softmax
                 logits = torch.clamp(logits, -20, 20)
 
-                # print("Logits min/max:", logits.min().item(), logits.max().item())
-
                 # Apply mask
                 assert batch_action_masks.shape == logits.shape
                 logits = logits.masked_fill(~batch_action_masks, -1e9)
@@ -113,7 +117,6 @@ class PPOAgent:
                     bad_rows = (valid_counts == 0).nonzero(as_tuple=True)[0]
                     raise RuntimeError(f"No valid actions in rows {bad_rows}")
 
-                # Optional
                 if torch.isnan(logits).any() or torch.isinf(logits).any():
                     print("NaN or Inf detected in logits")
                 
@@ -149,12 +152,22 @@ class PPOAgent:
 
                 loss = policy_loss + value_coef * value_loss - entropy_coef * entropy
 
+                # ---- Record losses for plotting ----
+                policy_losses.append(policy_loss.item())
+                value_losses.append(value_loss.item())
+                entropy_losses.append(entropy.item())
+
                 # ---- Backprop ----
 
                 self.optimiser.zero_grad()
                 loss.backward()
 
-                # Debug - If you see numbers like: 10 → normal, 100 → unstable, 1000+ → catastrophic - You have confirmed the explosion source.
+                # Debug - If you see numbers like:
+                # 10 → normal
+                # 100 → unstable
+                # 1000+ → catastrophic
+                # You have confirmed the explosion source.
+
                 total_norm = 0.0
                 for p in self.model.parameters():
                     if p.grad is not None:
@@ -169,3 +182,11 @@ class PPOAgent:
                 torch.nn.utils.clip_grad_norm_(self.model.parameters(), 0.5)
 
                 self.optimiser.step()
+
+        # ---- Return mean losses for plotting ----
+
+        return (
+            float(np.mean(policy_losses)),
+            float(np.mean(value_losses)),
+            float(np.mean(entropy_losses))
+        )

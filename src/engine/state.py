@@ -167,30 +167,30 @@ class GameState:
                 
         return tensor
             
-    def edge_tensor(self):
+    def edge_tensor(self, ordered_players):
         num_edges = 72
-        num_players = len(self.players)
+        num_players = len(ordered_players)
         edge_tensor = np.zeros((num_edges, num_players + 1), dtype=np.float32)
 
-        for p_idx, player in enumerate(self.players):
+        for p_idx, player in enumerate(ordered_players):
             for edge_idx in player.roads:
                 edge_tensor[edge_idx, p_idx] = 1.0
 
         # Free edge channel
-        occupied_edges = set().union(*[player.roads for player in self.players])
+        occupied_edges = set().union(*[player.roads for player in ordered_players])
         for edge_idx in range(num_edges):
             if edge_idx not in occupied_edges:
                 edge_tensor[edge_idx, -1] = 1.0
                 
         return edge_tensor
     
-    def vertex_tensor(self):
+    def vertex_tensor(self, ordered_players):
         num_vertices = 54
-        num_players = len(self.players)
+        num_players = len(ordered_players)
         
         vertex_tensor = np.zeros((num_vertices, num_players + 2), dtype=np.float32)
         
-        for p_idx, player in enumerate(self.players):
+        for p_idx, player in enumerate(ordered_players):
             # Settlements
             for v in player.settlements:
                 vertex_tensor[v, p_idx] = 1.0  # mark player ownership
@@ -203,7 +203,7 @@ class GameState:
         
         return vertex_tensor
         
-    def resources_tensor(self):
+    def resources_tensor(self, ordered_players):
         MAX_PLAYERS = 4  # or the fixed number your network expects
         NUM_RESOURCES = 5
         max_resource = 20.0
@@ -211,23 +211,33 @@ class GameState:
         # Initialize with zeros to pad missing players
         resources_tensor = np.zeros((MAX_PLAYERS, NUM_RESOURCES), dtype=np.float32)
 
-        for player_idx, player in enumerate(self.players):
+        for i, player in enumerate(ordered_players):
             # Convert to NumPy array first
             player_resources = np.array(player.resources, dtype=np.float32)
             # Cap and normalize
-            resources_tensor[player_idx] = np.minimum(player_resources, max_resource) / max_resource
+            resources_tensor[i] = np.minimum(player_resources, max_resource) / max_resource
 
         return resources_tensor
             
     def state_to_tensor(self):
+        ordered_players = self.ordered_players()
+        
         input_vector = np.concatenate([
             self.terrain_tensor().flatten(),
-            self.vertex_tensor().flatten(),
-            self.edge_tensor().flatten(),
-            self.resources_tensor().flatten()
+            self.vertex_tensor(ordered_players).flatten(),
+            self.edge_tensor(ordered_players).flatten(),
+            self.resources_tensor(ordered_players).flatten()
         ])
         
         return input_vector
+    
+    def ordered_players(self):
+        current = self.get_current_player_idx()
+
+        return [
+            self.players[(current + i) % 4]
+            for i in range(4)
+        ]
       
     def __str__(self) -> str:
         start = f"\n---------------------------------------------------------------------------------------------------------------------------------------------------------\n                                                                    Game State: turn={self.turn} \n---------------------------------------------------------------------------------------------------------------------------------------------------------\n"

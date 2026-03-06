@@ -1,0 +1,16 @@
+Summary of the Three Most Critical Requirements
+
+For PPO to learn Catan effectively:
+    - Correct credit assignment
+        reward given to acting player
+
+    - Masked action sampling
+        invalid logits → -inf
+        
+    - Player-relative state representation
+        state encoded from current player's perspective - For reinforcement learning algorithms such as 
+        Proximal Policy Optimization, this symmetry reduction significantly improves sample efficiency 
+        when training agents for Settlers of Catan.
+
+Naming Convention
+agent_ppo_iter01

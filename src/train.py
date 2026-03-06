@@ -1,3 +1,5 @@
+import os
+
 import torch
 import time
 import numpy as np
@@ -8,8 +10,9 @@ from learning.env import CatanEnv
 from learning.agent import PPOAgent
 from learning.model import ActorCritic
 from map.geometry import TOTAL_ACTIONS
+from tools.training_metrics import LossMetrics
 
-def train(env, agent, num_episodes=40000):
+def train(env, agent, model_name,num_episodes=40000, loss_metrics=None, metric_freq=100):
     total_start = time.time()  # Start total training timer
     # Firstly I define the buffer. This is what stores the actions that have been taken. And looks like this: 
     """
@@ -73,7 +76,6 @@ def train(env, agent, num_episodes=40000):
                 print(f"Max steps {max_steps} reached, terminating episode.")
 
         # --- After episode ends ---
-
         if truncated:
             # Episode ended due to time limit — bootstrap critic
             with torch.no_grad():
@@ -97,15 +99,20 @@ def train(env, agent, num_episodes=40000):
         advantages = torch.tensor(advantages, dtype=torch.float32)
         returns = torch.tensor(returns, dtype=torch.float32)
         
-        agent.update(buffer, advantages, returns)
+        policy_loss, value_loss, entropy = agent.update(buffer, advantages, returns)
+
+        if episode % metric_freq == 0:
+            loss_metrics.policy_losses.append(policy_loss)
+            loss_metrics.value_losses.append(value_loss)
+            loss_metrics.entropy_losses.append(entropy)
+            loss_metrics.episodes.append(episode)
         
         # Compute entropy of the action distribution for diagnostic purposes
-        if episode % 1000 == 0:
-            with torch.no_grad():
-                logits, _ = agent.model(state_tensor)  # shape: [201]
-                probs = torch.softmax(logits, dim=-1)  # full distribution
-                entropy = -(probs * torch.log(probs + 1e-12)).sum().item()  # full entropy
-                print(f"Episode {episode}, Entropy: {entropy:.4f}")
+        if episode % (metric_freq * 100) == 0:
+            print(f"Saving model and metrics at episode {episode}...")
+            torch.save(model.state_dict(), f"{model_name}\\model.pth")
+            loss_metrics.save(f"{model_name}\\metrics") 
+            loss_metrics.save_plot(model_name)  # Plot losses every 100 metric updates (i.e., every 10,000 episodes if metric_freq=100)
 
         end_time = time.time()  # Track episode end
         episode_duration = end_time - start_time
@@ -124,16 +131,61 @@ print("""
 ----------------------------------------------------------
 """)
 
-filename = input("Filename: ")
-path     = ".\\learning\\models\\"
+model_name = input("Model Name: ").strip()
 
-# Define the params
+num_episodes = int(input("Number of Episodes: "))
+# Define Training Metrics Object 
+loss_metrics = LossMetrics()
+
+metric_freq = int(input("Metric Frequency (episodes): "))  # How often to record metrics (in episodes)
+existing_model = input("Use Existing Model (y/n): ").strip()
+
+# Define the path
+path = ".\\learning\\settlers_ppo_training\\"
+
+
+# Model Params
 epsilon     = 3e-4      # Learning Rate
 state_dim   = 1027
 action_dim  = TOTAL_ACTIONS
 
 # Create model instance first 
 model = ActorCritic(state_dim=state_dim, action_dim=action_dim)
+
+# Load existing learnt model params 
+if existing_model == 'y': # If user provided an existing model filename, load it
+    existing_models = [f for f in os.listdir(path) if os.path.isdir(os.path.join(path, f))]
+    input_model = input(f"Existing Models: {existing_models}\nEnter model name to load: ").strip()
+    if input_model not in existing_models:
+        print("Invalid input for existing model. Starting with a new model.")    
+        print("Exiting Program")
+        exit()
+
+    else:
+        model.load_state_dict(torch.load(f"{path}{input_model}\\model.pth"))
+        loss_metrics.load(f"{path}{input_model}\\metrics")  # Load corresponding training metrics
+        print(f"Loaded existing model ({input_model}) and its training metrics.")
+    
+        # Create the folder inside path (in case it doesn't exist, or to ensure plots folder exists)
+        full_path = os.path.join(path, model_name)
+        os.makedirs(full_path, exist_ok=True)
+        os.makedirs(f"{full_path}\\plots\\", exist_ok=True)
+        print(f"Folder created: {full_path}")
+    
+
+elif existing_model == 'n':
+    print("Starting with a new model.")
+    
+    # Create the folder inside path
+    full_path = os.path.join(path, model_name)
+    os.makedirs(full_path, exist_ok=True)
+    os.makedirs(f"{full_path}\\plots\\", exist_ok=True)
+
+    print(f"Folder created: {full_path}")
+else:
+    print("Invalid input for using existing model")    
+    print("Exiting Program")
+    exit()
 
 # Define Agent 
 agent = PPOAgent(
@@ -146,7 +198,12 @@ agent = PPOAgent(
 env = CatanEnv()
 
 # Run 
-train(env, agent)
+train(env, agent, f"{path}{model_name}", num_episodes=num_episodes, loss_metrics=loss_metrics, metric_freq=metric_freq)
 
 # Save the model
-torch.save(model.state_dict(), f"{path}{filename}.pth")
+torch.save(model.state_dict(), f"{path}{model_name}\\model.pth")
+loss_metrics.save(f"{path}{model_name}\\metrics") 
+
+# Plot the losses
+loss_metrics.plot()
+loss_metrics.save_plot(f"{path}{model_name}")

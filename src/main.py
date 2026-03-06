@@ -34,7 +34,7 @@ def main(
     if model_name != None:
         # Load model 
         # --------------------
-        path     = ".\\learning\\models\\"
+        path     = f".\\learning\\settlers_ppo_training\\{model_name}\\"
 
         # Define the params
         epsilon     = 3e-4      # Learning Rate
@@ -48,7 +48,7 @@ def main(
         model = ActorCritic(state_dim=state_dim, action_dim=action_dim)
 
         # Load parameters
-        model.load_state_dict(torch.load(f"{path}{model_name}.pth"))
+        model.load_state_dict(torch.load(f"{path}model.pth"))
 
         # Set to evaluation mode
         model.eval()    
