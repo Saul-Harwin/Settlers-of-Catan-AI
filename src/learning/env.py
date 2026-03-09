@@ -41,8 +41,12 @@ class CatanEnv:
         return self.state.state_to_tensor()
 
     def step(self, action_id):
+        # 1 execute action
+        # 2 apply environment dynamics
+        # 3 compute reward
+        # 4 check terminal
+        
         player_idx = self.state.get_current_player_idx()
-        # prev_vp = self.state.players[player_idx].victory_points
         
         # Decode the action ID into the proper Action object
         decoded = self.decode_action(action_id)
@@ -72,9 +76,6 @@ class CatanEnv:
             decoded
         )
 
-        # --- Compute reward and done flag ---
-        reward = self._compute_reward(prev_state)
-        done = self._check_done()
         
         # --- Turn transition and dice/resource mechanics ---
         if isinstance(decoded, EndTurn):
@@ -87,6 +88,9 @@ class CatanEnv:
             # Distribute resources according to dice roll
             resource_production(self.state, dice_roll)
 
+        # --- Compute reward and done flag ---
+        reward = self._compute_reward(prev_state, player_idx)
+        done = self._check_done()
 
         # Return the flattened tensor, reward, done, and info dict
         return self.state.state_to_tensor(), reward, done, {}
@@ -189,33 +193,13 @@ class CatanEnv:
         
         else:
             raise ValueError(f"Unknown action type: {type(action)}")
-        
-    # def _compute_reward(self, prev_vp) -> float:
-    #     player = self.state.players[self.state.get_current_player_idx()]
-
-    #     reward = 0.0
-
-    #     # Reward victory points
-    #     new_vp = player.victory_points
-
-    #     # Reward a point per victory point gained in a turn
-    #     reward = new_vp - prev_vp
-        
-    #     # Terminal bonus
-    #     if self.state.is_terminal():
-    #         winner = self.state.get_winner()
-    #         reward += 5.0 if winner == self.state.get_current_player_idx() else -5.0
-
-    #     return reward
     
-    def _compute_reward(self, prev_state) -> float:
+    def _compute_reward(self, prev_state, player_idx) -> float:
         """
         Reward based on structured state deltas.
         Uses only true game variables — not tensor reconstruction.
         """
-
-        player_idx = self.state.get_current_player_idx()
-
+        
         player = self.state.players[player_idx]
         prev_player = prev_state.players[player_idx]
 
