@@ -12,7 +12,7 @@ from learning.model import ActorCritic
 from map.geometry import TOTAL_ACTIONS
 from tools.training_metrics import LossMetrics
 
-def train(env, agent, model_name,num_episodes=40000, loss_metrics=None, metric_freq=100):
+def train(env, agent, model_name, num_episodes=40000, metrics=None, metric_freq=100):
     total_start = time.time()  # Start total training timer
     # Firstly I define the buffer. This is what stores the actions that have been taken. And looks like this: 
     """
@@ -42,7 +42,7 @@ def train(env, agent, model_name,num_episodes=40000, loss_metrics=None, metric_f
             steps += 1
             
             # Defines the state tensor. Converts the input vector representation of the state into something that Pytorch understands
-            state_tensor = torch.tensor(state, dtype=torch.float32)
+            state_tensor = torch.from_numpy(state).float()
 
             # Defines a mask which we use to remove all the non legal actions.
             mask = env.legal_action_mask(env.state)
@@ -76,18 +76,21 @@ def train(env, agent, model_name,num_episodes=40000, loss_metrics=None, metric_f
                 print(f"Max steps {max_steps} reached, terminating episode.")
 
         # --- After episode ends ---
+        mean_episode_reward = np.sum(buffer.rewards)
+        values = torch.stack(buffer.values).detach()
+        
         if truncated:
             # Episode ended due to time limit — bootstrap critic
             with torch.no_grad():
                 next_state_tensor = torch.tensor(state, dtype=torch.float32)
-                _, last_value_tensor = model(next_state_tensor)
+                _, last_value_tensor = agent.model(next_state_tensor)
                 last_value = last_value_tensor.item()
         else:
             # True terminal state
             last_value = 0.0
 
-        if np.isnan(buffer.values).any() or np.isinf(buffer.values).any():
-            print("Warning: value contains NaN/Inf")
+        if torch.isnan(torch.stack(buffer.values)).any():
+            print("Warning: value contains NaN")
 
         advantages, returns = compute_gae(
             buffer.rewards,
@@ -99,20 +102,35 @@ def train(env, agent, model_name,num_episodes=40000, loss_metrics=None, metric_f
         advantages = torch.tensor(advantages, dtype=torch.float32)
         returns = torch.tensor(returns, dtype=torch.float32)
         
-        policy_loss, value_loss, entropy = agent.update(buffer, advantages, returns)
+        returns = (returns - returns.mean()) / (returns.std() + 1e-8)
+        advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
+        
+        policy_loss, value_loss, entropy, kl_div = agent.update(
+            buffer,
+            advantages,
+            returns
+        )
 
         if episode % metric_freq == 0:
-            loss_metrics.policy_losses.append(policy_loss)
-            loss_metrics.value_losses.append(value_loss)
-            loss_metrics.entropy_losses.append(entropy)
-            loss_metrics.episodes.append(episode)
+            metrics.policy_losses.append(policy_loss)
+            metrics.value_losses.append(value_loss)
+            metrics.entropy_losses.append(entropy)
+            metrics.kl_divergences.append(kl_div)
+            metrics.episodes.append(episode)
+            
+            metrics.mean_rewards.append(mean_episode_reward)
+            
+            metrics.compute_explained_variance(
+                values.cpu().numpy(),
+                returns.cpu().numpy()
+            )
         
         # Compute entropy of the action distribution for diagnostic purposes
-        if episode % (metric_freq * 100) == 0:
+        if episode % (metric_freq * 100) == 0 and episode != 0:
             print(f"Saving model and metrics at episode {episode}...")
             torch.save(model.state_dict(), f"{model_name}\\model.pth")
-            loss_metrics.save(f"{model_name}\\metrics") 
-            loss_metrics.save_plot(model_name)  # Plot losses every 100 metric updates (i.e., every 10,000 episodes if metric_freq=100)
+            metrics.save(f"{model_name}\\metrics") 
+            metrics.save_plot(model_name)  # Plot losses every 100 metric updates (i.e., every 10,000 episodes if metric_freq=100)
 
         end_time = time.time()  # Track episode end
         episode_duration = end_time - start_time
@@ -135,7 +153,7 @@ model_name = input("Model Name: ").strip()
 
 num_episodes = int(input("Number of Episodes: "))
 # Define Training Metrics Object 
-loss_metrics = LossMetrics()
+metrics = LossMetrics()
 
 metric_freq = int(input("Metric Frequency (episodes): "))  # How often to record metrics (in episodes)
 existing_model = input("Use Existing Model (y/n): ").strip()
@@ -145,7 +163,7 @@ path = ".\\learning\\settlers_ppo_training\\"
 
 
 # Model Params
-epsilon     = 3e-4      # Learning Rate
+epsilon     = 3e-5      # Learning Rate
 state_dim   = 1027
 action_dim  = TOTAL_ACTIONS
 
@@ -163,7 +181,7 @@ if existing_model == 'y': # If user provided an existing model filename, load it
 
     else:
         model.load_state_dict(torch.load(f"{path}{input_model}\\model.pth"))
-        loss_metrics.load(f"{path}{input_model}\\metrics")  # Load corresponding training metrics
+        metrics.load(f"{path}{input_model}\\metrics")  # Load corresponding training metrics
         print(f"Loaded existing model ({input_model}) and its training metrics.")
     
         # Create the folder inside path (in case it doesn't exist, or to ensure plots folder exists)
@@ -198,12 +216,12 @@ agent = PPOAgent(
 env = CatanEnv()
 
 # Run 
-train(env, agent, f"{path}{model_name}", num_episodes=num_episodes, loss_metrics=loss_metrics, metric_freq=metric_freq)
+train(env, agent, f"{path}{model_name}", num_episodes=num_episodes, metrics=metrics, metric_freq=metric_freq)
 
 # Save the model
 torch.save(model.state_dict(), f"{path}{model_name}\\model.pth")
-loss_metrics.save(f"{path}{model_name}\\metrics") 
+metrics.save(f"{path}{model_name}\\metrics") 
 
 # Plot the losses
-loss_metrics.plot()
-loss_metrics.save_plot(f"{path}{model_name}")
+metrics.plot()
+metrics.save_plot(f"{path}{model_name}")

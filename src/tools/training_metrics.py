@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt 
 import pickle
+import numpy as np
 
 
 class LossMetrics:  
@@ -9,23 +10,60 @@ class LossMetrics:
         self.policy_losses = []
         self.value_losses = []
         self.entropy_losses = []
+        self.kl_divergences = []
+        self.explained_variances = []
+        self.mean_rewards = []
         self.episodes = []
         
     def plot(self):
-        plt.figure(figsize=(10,6))
+        fig, axs = plt.subplots(2, 2, figsize=(12,8))
 
-        plt.plot(self.policy_losses, label="Policy Loss")
-        # plt.plot(self.value_losses, label="Value Loss")
-        plt.plot(self.entropy_losses, label="Entropy Loss")
+        # Policy + Value Loss
+        axs[0,0].plot(self.policy_losses, label="Policy Loss")
+        axs[0,0].plot(self.value_losses, label="Value Loss")
+        axs[0,0].set_title("Policy / Value Loss")
+        axs[0,0].set_xlabel("Training Updates")
+        axs[0,0].set_ylabel("Loss")
+        axs[0,0].legend()
+        axs[0,0].grid(True)
 
-        plt.xlabel("Training Updates")
-        plt.ylabel("Loss")
-        plt.title("PPO Loss Curves (10-Point Catan)")
-        plt.legend()
-        plt.grid(True)
+        # Entropy
+        axs[0,1].plot(self.entropy_losses, label="Entropy Loss")
+        axs[0,1].set_title("Entropy")
+        axs[0,1].set_xlabel("Training Updates")
+        axs[0,1].set_ylabel("Entropy")
+        axs[0,1].legend()
+        axs[0,1].grid(True)
 
+        # KL Divergence
+        axs[1,0].plot(self.kl_divergences, label="KL Divergence")
+        axs[1,0].set_title("KL Divergence")
+        axs[1,0].set_xlabel("Training Updates")
+        axs[1,0].set_ylabel("KL")
+        axs[1,0].legend()
+        axs[1,0].grid(True)
+
+        # Mean Reward
+        axs[1,1].plot(self.mean_rewards, label="Mean Episode Reward")
+        axs[1,1].set_title("Mean Reward")
+        axs[1,1].set_xlabel("Training Updates")
+        axs[1,1].set_ylabel("Reward")
+        axs[1,1].legend()
+        axs[1,1].grid(True)
+
+        plt.tight_layout()
         plt.show()
         
+    def compute_explained_variance(self, values, returns):
+        """
+        values: predicted value estimates
+        returns: empirical returns
+        """
+        var_returns = np.var(returns)
+        if var_returns == 0:
+            return np.nan
+        return 1 - np.var(returns - values) / var_returns
+    
     def save(self, model_name):
         with open(f"{model_name}.pkl", 'wb') as f:
             pickle.dump(self, f)
@@ -41,17 +79,29 @@ class LossMetrics:
             self.episodes = loaded_metrics.episodes
             
     def save_plot(self, model_name):
-        plt.figure(figsize=(10,6))
+        fig, axs = plt.subplots(2,2, figsize=(12,8))
 
-        plt.plot(self.policy_losses, label="Policy Loss")
-        # plt.plot(self.value_losses, label="Value Loss")
-        plt.plot(self.entropy_losses, label="Entropy Loss")
+        axs[0,0].plot(self.policy_losses, label="Policy Loss")
+        axs[0,0].plot(self.value_losses, label="Value Loss")
+        axs[0,0].legend()
+        axs[0,0].grid(True)
+        axs[0,0].set_title("Policy / Value Loss")
 
-        plt.xlabel("Training Updates")
-        plt.ylabel("Loss")
-        plt.title("PPO Loss Curves (10-Point Catan)")
-        plt.legend()
-        plt.grid(True)
+        axs[0,1].plot(self.entropy_losses, label="Entropy")
+        axs[0,1].legend()
+        axs[0,1].grid(True)
+        axs[0,1].set_title("Entropy")
 
-        plt.savefig(f"{model_name}\\plots\\policy_loss_plot_{self.episodes[-1]}.png")  # Save plot with episode number in filename
-        plt.close()  # Close the plot to free memory
+        axs[1,0].plot(self.kl_divergences, label="KL Divergence")
+        axs[1,0].legend()
+        axs[1,0].grid(True)
+        axs[1,0].set_title("KL Divergence")
+
+        axs[1,1].plot(self.mean_rewards, label="Mean Reward")
+        axs[1,1].legend()
+        axs[1,1].grid(True)
+        axs[1,1].set_title("Mean Episode Reward")
+
+        plt.tight_layout()
+        plt.savefig(f"{model_name}\\plots\\training_metrics_{self.episodes[-1]}.png")
+        plt.close()

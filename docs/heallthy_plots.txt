@@ -1,0 +1,29 @@
+What a Healthy Training Curve Would Look Like
+
+Ideal trends during reinforcement learning training (e.g., PPO):
+
+Policy Loss
+    Small oscillations around a relatively stable magnitude. Large spikes or persistent 
+    drift may indicate unstable policy updates or excessive clipping.
+
+Value Loss
+    Gradually decreases over time as the critic learns to approximate the value function 
+    more accurately. Some noise is expected, but the long-term trend should decline.
+
+Entropy
+    Slowly decreases during training. Early training should have higher entropy 
+    (encouraging exploration), while later training should show lower entropy as the 
+    policy becomes more confident.
+
+KL Divergence
+    Remains relatively small and stable. Large spikes indicate that policy updates are 
+    too aggressive and may violate the PPO trust region assumption.
+
+Mean Episode Reward
+    Shows an overall upward trend with decreasing variance as the agent improves and 
+    learns a more consistent policy.
+
+Interpretation
+    If training curves show partial improvement but unstable value loss, it often suggests 
+    the critic is not learning reliably. This can lead to noisy advantage estimates and 
+    unstable policy updates.

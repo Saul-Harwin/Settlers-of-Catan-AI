@@ -47,7 +47,8 @@ class PPOAgent:
         policy_losses = []
         value_losses = []
         entropy_losses = []
-
+        kl_divs = []
+        
         # ---- Prepare tensors ----
 
         states = torch.stack(buffer.states)
@@ -127,6 +128,8 @@ class PPOAgent:
                 # ---- Policy Loss ----
 
                 ratio = torch.exp(new_log_probs - batch_old_log_probs)
+                approx_kl = (batch_old_log_probs - new_log_probs).mean()
+                kl_divs.append(approx_kl.item())
                 
                 if torch.isnan(ratio).any():
                     raise RuntimeError("NaN in PPO ratio")
@@ -188,5 +191,6 @@ class PPOAgent:
         return (
             float(np.mean(policy_losses)),
             float(np.mean(value_losses)),
-            float(np.mean(entropy_losses))
+            float(np.mean(entropy_losses)),
+            float(np.mean(kl_divs))
         )
